@@ -1391,7 +1391,10 @@
             get, 
             update,
             push,
-            onValue
+            onValue,
+            query,
+            orderByChild,
+            equalTo
         } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
         // CONFIGURAÇÃO DO FIREBASE
@@ -1622,7 +1625,7 @@
                 // Carregar dados
                 loadUserData(user);
                 loadUserKeys(user.email);
-                loadWalletData(user.uid);
+                loadWalletData(user.email); // CORREÇÃO: Passar email em vez de UID
                 updateDailyKeyTimer();
             } else {
                 // Não logado
@@ -1701,37 +1704,47 @@
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
                 
-                // CORREÇÃO: Criar carteira com R$ 10,00 de bônus - NO CAMINHO CORRETO
+                // CORREÇÃO: Criar carteira com R$ 10,00 de bônus - ESTRUTURA COMPATÍVEL
                 const walletId = 'user_' + Date.now(); // ID diferente do UID
                 const walletRef = ref(database, 'wallets/' + walletId);
                 
-                await set(walletRef, {
+                // ESTRUTURA COMPATÍVEL COM O ADMIN
+                const walletData = {
                     balance: 10.00,
                     totalReceived: 10.00,
                     lastCredit: Date.now(),
-                    userId: user.uid, // Adicionar UID do usuário
-                    userEmail: user.email,
+                    userId: user.uid,
+                    userEmail: email,
+                    email: email, // Campo duplicado para compatibilidade
+                    createdAt: Date.now(),
+                    status: 'active',
                     history: [{
                         amount: 10.00,
                         description: '🎉 Bônus de Cadastro',
                         timestamp: Date.now(),
                         type: 'bonus'
                     }]
-                });
+                };
                 
-                // Criar dados do usuário - NO CAMINHO CORRETO
+                await set(walletRef, walletData);
+                
+                // Criar dados do usuário - ESTRUTURA COMPATÍVEL
                 const userId = 'user_' + Date.now();
                 const userRef = ref(database, 'users/' + userId);
                 
-                await set(userRef, {
+                const userData = {
                     email: user.email,
-                    firebaseUid: user.uid, // Adicionar UID do Firebase
+                    firebaseUid: user.uid,
                     createdAt: Date.now(),
                     lastDailyKey: null,
                     keysCount: 0,
                     bonusReceived: true,
-                    walletId: walletId // Referência para a carteira
-                });
+                    walletId: walletId,
+                    balance: 10.00, // Campo adicional para compatibilidade
+                    status: 'active'
+                };
+                
+                await set(userRef, userData);
                 
                 errorDiv.style.display = 'none';
                 document.getElementById('registerEmail').value = '';
@@ -1839,7 +1852,7 @@
                     
                     // Carregar carteira
                     if (userData.walletId) {
-                        loadWalletData(userData.walletId);
+                        loadWalletData(user.email);
                     } else {
                         // Buscar carteira pelo email
                         await findWalletByEmail(user.email);
@@ -1852,31 +1865,108 @@
             }
         }
 
-        // CORREÇÃO: Buscar carteira pelo email
-        async function findWalletByEmail(userEmail) {
+        // CORREÇÃO PRINCIPAL: Buscar carteira pelo email (FUNÇÃO ATUALIZADA)
+        async function loadWalletData(userEmail) {
             try {
-                console.log('🔍 Buscando carteira para email:', userEmail);
+                console.log('💰 BUSCANDO CARTEIRA para email:', userEmail);
                 
                 const walletsRef = ref(database, 'wallets');
                 const snapshot = await get(walletsRef);
                 
                 if (snapshot.exists()) {
                     const wallets = snapshot.val();
+                    let walletFound = false;
+                    let walletData = null;
+                    let walletId = null;
                     
-                    for (const [walletId, wallet] of Object.entries(wallets)) {
-                        if (wallet.userEmail === userEmail) {
-                            console.log('✅ Carteira encontrada:', walletId);
-                            loadWalletData(walletId);
-                            return;
+                    // BUSCA INTELIGENTE: Procura pelo email de várias formas
+                    for (const [id, wallet] of Object.entries(wallets)) {
+                        // Verifica múltiplos campos possíveis
+                        if ((wallet.userEmail && wallet.userEmail === userEmail) ||
+                            (wallet.email && wallet.email === userEmail) ||
+                            (wallet.user && wallet.user.email === userEmail) ||
+                            (wallet.userEmail === userEmail.toLowerCase()) ||
+                            (wallet.email === userEmail.toLowerCase())) {
+                            
+                            console.log('✅ CARTEIRA ENCONTRADA! ID:', id);
+                            console.log('📊 Dados da carteira:', wallet);
+                            
+                            walletFound = true;
+                            walletData = wallet;
+                            walletId = id;
+                            break;
                         }
                     }
                     
-                    console.log('❌ Carteira não encontrada para email:', userEmail);
-                    // Criar carteira se não existir
-                    await createWalletForUser(userEmail);
+                    if (walletFound) {
+                        // Atualizar saldo
+                        const balance = walletData.balance || 0;
+                        const totalReceived = walletData.totalReceived || 0;
+                        
+                        console.log('💰 Saldo encontrado:', balance);
+                        
+                        // Atualizar UI
+                        document.getElementById('walletBalance').textContent = balance.toFixed(2);
+                        document.getElementById('dashboardBalance').textContent = `R$ ${balance.toFixed(2)}`;
+                        document.getElementById('walletHeader').textContent = `R$ ${balance.toFixed(2)}`;
+                        document.getElementById('shopBalance').textContent = `R$ ${balance.toFixed(2)}`;
+                        document.getElementById('totalReceived').textContent = `R$ ${totalReceived.toFixed(2)}`;
+                        
+                        // Atualizar botões da shop
+                        updateShopButtons(balance);
+                        
+                        // Carregar histórico
+                        loadWalletHistory(walletData.history || []);
+                        
+                        // Salvar referência da carteira no usuário
+                        await saveWalletReference(userEmail, walletId);
+                        
+                        return;
+                    } else {
+                        console.log('❌ Carteira não encontrada para:', userEmail);
+                        console.log('🔄 Procurando em todos os wallets...');
+                        
+                        // Debug: Mostrar todas as carteiras
+                        for (const [id, wallet] of Object.entries(wallets)) {
+                            console.log(`Wallet ${id}:`, wallet);
+                        }
+                    }
+                } else {
+                    console.log('❌ Nenhuma carteira encontrada no banco de dados');
+                }
+                
+                // Se não encontrou, criar uma nova
+                console.log('🔄 Criando nova carteira para:', userEmail);
+                await createWalletForUser(userEmail);
+                
+            } catch (error) {
+                console.error('❌ ERRO ao carregar carteira:', error);
+                alert('❌ Erro ao carregar carteira: ' + error.message);
+            }
+        }
+
+        // Salvar referência da carteira no usuário
+        async function saveWalletReference(userEmail, walletId) {
+            try {
+                const usersRef = ref(database, 'users');
+                const snapshot = await get(usersRef);
+                
+                if (snapshot.exists()) {
+                    const users = snapshot.val();
+                    
+                    for (const [userId, userData] of Object.entries(users)) {
+                        if (userData.email === userEmail) {
+                            await update(ref(database, 'users/' + userId), {
+                                walletId: walletId,
+                                lastWalletUpdate: Date.now()
+                            });
+                            console.log('✅ Referência da carteira salva no usuário');
+                            break;
+                        }
+                    }
                 }
             } catch (error) {
-                console.error('Error finding wallet:', error);
+                console.error('Error saving wallet reference:', error);
             }
         }
 
@@ -1886,31 +1976,41 @@
                 const user = auth.currentUser;
                 if (!user) return;
                 
-                console.log('🔄 Criando nova carteira para:', userEmail);
+                console.log('🔄 CRIANDO NOVA CARTEIRA para:', userEmail);
                 
-                const walletId = 'user_' + Date.now();
+                const walletId = 'wallet_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
                 const walletRef = ref(database, 'wallets/' + walletId);
                 
-                await set(walletRef, {
-                    balance: 0.00,
-                    totalReceived: 0.00,
+                const walletData = {
+                    balance: 10.00, // Bônus inicial
+                    totalReceived: 10.00,
                     lastCredit: Date.now(),
                     userId: user.uid,
                     userEmail: userEmail,
+                    email: userEmail, // Campo duplicado para compatibilidade
                     createdAt: Date.now(),
-                    history: []
-                });
+                    status: 'active',
+                    history: [{
+                        amount: 10.00,
+                        description: '🎉 Bônus de Cadastro',
+                        timestamp: Date.now(),
+                        type: 'bonus'
+                    }]
+                };
                 
-                console.log('✅ Carteira criada:', walletId);
+                await set(walletRef, walletData);
+                
+                console.log('✅ Carteira criada com sucesso! ID:', walletId);
                 
                 // Atualizar usuário com walletId
                 await updateUserWalletId(userEmail, walletId);
                 
                 // Carregar nova carteira
-                loadWalletData(walletId);
+                loadWalletData(userEmail);
                 
             } catch (error) {
-                console.error('Error creating wallet:', error);
+                console.error('❌ Error creating wallet:', error);
+                alert('Erro ao criar carteira: ' + error.message);
             }
         }
 
@@ -1926,56 +2026,28 @@
                     for (const [userId, userData] of Object.entries(users)) {
                         if (userData.email === userEmail) {
                             await update(ref(database, 'users/' + userId), {
-                                walletId: walletId
+                                walletId: walletId,
+                                balance: 10.00, // Atualizar saldo no usuário também
+                                lastUpdated: Date.now()
                             });
                             console.log('✅ Usuário atualizado com walletId:', walletId);
-                            break;
+                            return;
                         }
                     }
+                    
+                    // Se não encontrou o usuário, criar um
+                    const newUserId = 'user_' + Date.now();
+                    await set(ref(database, 'users/' + newUserId), {
+                        email: userEmail,
+                        walletId: walletId,
+                        balance: 10.00,
+                        createdAt: Date.now(),
+                        status: 'active'
+                    });
+                    console.log('✅ Novo registro de usuário criado');
                 }
             } catch (error) {
                 console.error('Error updating user walletId:', error);
-            }
-        }
-
-        // CORREÇÃO: Carregar dados da carteira
-        async function loadWalletData(walletId) {
-            try {
-                console.log('💰 Buscando carteira ID:', walletId);
-                
-                const walletRef = ref(database, 'wallets/' + walletId);
-                const snapshot = await get(walletRef);
-                
-                if (snapshot.exists()) {
-                    const wallet = snapshot.val();
-                    
-                    // Atualizar saldo
-                    const balance = wallet.balance || 0;
-                    const totalReceived = wallet.totalReceived || 0;
-                    
-                    console.log('✅ Saldo encontrado:', balance);
-                    
-                    document.getElementById('walletBalance').textContent = balance.toFixed(2);
-                    document.getElementById('dashboardBalance').textContent = `R$ ${balance.toFixed(2)}`;
-                    document.getElementById('walletHeader').textContent = `R$ ${balance.toFixed(2)}`;
-                    document.getElementById('shopBalance').textContent = `R$ ${balance.toFixed(2)}`;
-                    document.getElementById('totalReceived').textContent = `R$ ${totalReceived.toFixed(2)}`;
-                    
-                    // Atualizar botões da shop
-                    updateShopButtons(balance);
-                    
-                    // Carregar histórico
-                    loadWalletHistory(wallet.history || []);
-                    
-                } else {
-                    console.log('❌ Carteira não encontrada no Firebase:', walletId);
-                    document.getElementById('walletBalance').textContent = '0,00';
-                    document.getElementById('walletHeader').textContent = 'R$ 0,00';
-                    document.getElementById('shopBalance').textContent = 'R$ 0,00';
-                }
-            } catch (error) {
-                console.error('Error loading wallet:', error);
-                alert('❌ Erro ao carregar carteira: ' + error.message);
             }
         }
 
@@ -2309,7 +2381,7 @@
                     const wallets = snapshot.val();
                     
                     for (const [walletId, wallet] of Object.entries(wallets)) {
-                        if (wallet.userEmail === userEmail) {
+                        if (wallet.userEmail === userEmail || wallet.email === userEmail) {
                             const newBalance = (wallet.balance || 0) + 10.00;
                             const newTotal = (wallet.totalReceived || 0) + 10.00;
                             const newHistory = wallet.history || [];
@@ -2324,11 +2396,12 @@
                             await update(ref(database, 'wallets/' + walletId), {
                                 balance: newBalance,
                                 totalReceived: newTotal,
-                                history: newHistory.slice(-50)
+                                history: newHistory.slice(-50),
+                                lastCredit: Date.now()
                             });
                             
                             // Atualizar UI
-                            loadWalletData(walletId);
+                            loadWalletData(userEmail);
                             alert('🎉 Bônus de R$ 10,00 creditado na sua carteira!');
                             break;
                         }
@@ -2339,7 +2412,7 @@
             }
         }
 
-        // CORREÇÃO: Comprar key da shop
+        // CORREÇÃO: Comprar key da shop (FUNÇÃO ATUALIZADA)
         async function buyKey(planType, price, productName) {
             const user = auth.currentUser;
             if (!user) {
@@ -2352,6 +2425,8 @@
             }
             
             try {
+                console.log('🛒 Iniciando compra para:', user.email);
+                
                 // Buscar carteira pelo email
                 const walletsRef = ref(database, 'wallets');
                 const snapshot = await get(walletsRef);
@@ -2364,18 +2439,40 @@
                     const wallets = snapshot.val();
                     
                     for (const [id, wallet] of Object.entries(wallets)) {
-                        if (wallet.userEmail === user.email) {
+                        // Busca múltipla por email
+                        if ((wallet.userEmail && wallet.userEmail === user.email) ||
+                            (wallet.email && wallet.email === user.email)) {
+                            
                             walletFound = true;
                             walletId = id;
                             walletData = wallet;
+                            console.log('✅ Carteira encontrada para compra:', id);
                             break;
                         }
                     }
                 }
                 
                 if (!walletFound) {
-                    alert('❌ Carteira não encontrada! Entre em contato com o suporte.');
-                    return;
+                    alert('❌ Carteira não encontrada! O sistema tentará criar uma nova.');
+                    await createWalletForUser(user.email);
+                    
+                    // Tentar novamente após criar
+                    const newSnapshot = await get(walletsRef);
+                    if (newSnapshot.exists()) {
+                        const wallets = newSnapshot.val();
+                        for (const [id, wallet] of Object.entries(wallets)) {
+                            if (wallet.userEmail === user.email || wallet.email === user.email) {
+                                walletId = id;
+                                walletData = wallet;
+                                walletFound = true;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    if (!walletFound) {
+                        throw new Error('Não foi possível criar ou encontrar a carteira');
+                    }
                 }
                 
                 const currentBalance = walletData.balance || 0;
@@ -2426,7 +2523,7 @@
                     throw new Error(`Erro ao salvar key: ${saveResult.error}`);
                 }
                 
-                // Atualizar saldo
+                // Atualizar saldo na carteira
                 const newBalance = currentBalance - price;
                 const newHistory = walletData.history || [];
                 newHistory.push({
@@ -2438,7 +2535,8 @@
                 
                 await update(ref(database, 'wallets/' + walletId), {
                     balance: newBalance,
-                    history: newHistory.slice(-50)
+                    history: newHistory.slice(-50),
+                    lastUpdate: Date.now()
                 });
                 
                 // Mostrar modal com a key
@@ -2446,7 +2544,7 @@
                 document.getElementById('keyModal').classList.add('active');
                 
                 // Atualizar interface
-                loadWalletData(walletId);
+                loadWalletData(user.email);
                 loadUserKeys(user.email);
                 
                 // Mostrar mensagem de sucesso
