@@ -685,6 +685,123 @@
         .history-description {
             color: #ffffff;
         }
+
+        /* Shop Styles */
+        .shop-section {
+            padding: 30px;
+            text-align: center;
+        }
+
+        .shop-plans {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .plan-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid #333333;
+            border-radius: 15px;
+            padding: 40px 30px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .plan-card:hover {
+            transform: translateY(-10px);
+            border-color: #8a2be2;
+            box-shadow: 0 10px 30px rgba(138, 43, 226, 0.2);
+        }
+
+        .plan-card.popular {
+            border: 2px solid #8a2be2;
+            background: rgba(138, 43, 226, 0.05);
+        }
+
+        .plan-badge {
+            position: absolute;
+            top: 20px;
+            right: -35px;
+            background: #8a2be2;
+            color: white;
+            padding: 8px 40px;
+            font-size: 14px;
+            font-weight: bold;
+            transform: rotate(45deg);
+            box-shadow: 0 5px 15px rgba(138, 43, 226, 0.3);
+        }
+
+        .plan-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .plan-title {
+            color: #8a2be2;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .plan-price {
+            font-size: 42px;
+            color: #4caf50;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .plan-price::before {
+            content: "R$ ";
+            font-size: 24px;
+        }
+
+        .plan-duration {
+            color: #cccccc;
+            font-size: 16px;
+            margin-bottom: 25px;
+        }
+
+        .plan-features {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .plan-features li {
+            padding: 8px 0;
+            color: #cccccc;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .plan-features li:last-child {
+            border-bottom: none;
+        }
+
+        .plan-features li::before {
+            content: "✓";
+            color: #4caf50;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .buy-btn {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .buy-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .buy-btn:disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
     </style>
 </head>
 <body>
@@ -740,7 +857,7 @@
         <div class="key-generated-modal">
             <span class="close-modal" onclick="closeKeyModal()">×</span>
             <h3>✅ Key Gerada com Sucesso!</h3>
-            <p>Sua key diária foi gerada e já está disponível em "Minhas Keys".</p>
+            <p>Sua key foi gerada e já está disponível em "Minhas Keys".</p>
             <p>Você também pode copiá-la abaixo:</p>
             <div class="generated-key" id="generatedKeyValue" onclick="copyKey()"></div>
             <p><small>Clique na key acima para copiar</small></p>
@@ -754,6 +871,7 @@
             <a onclick="showSection('dashboard')">Dashboard</a>
             <a onclick="showSection('wallet')">Carteira</a>
             <a onclick="showSection('verify')">Verificar Key</a>
+            <a onclick="showSection('shop')">Shop</a>
             <a onclick="showSection('support')">Suporte</a>
             <div class="user-info">
                 <div class="user-avatar" id="userAvatar">U</div>
@@ -779,6 +897,9 @@
                     </a>
                     <a class="menu-item" onclick="showSection('freeKey')">
                         🎁 Key Diária
+                    </a>
+                    <a class="menu-item" onclick="showSection('shop')">
+                        🛒 Shop
                     </a>
                     <a class="menu-item" onclick="showSection('myKeys')">
                         🔑 Minhas Keys
@@ -826,7 +947,7 @@
                             </div>
                             <div class="info-row">
                                 <span class="info-label">Versão:</span>
-                                <span class="info-value">2.1.0</span>
+                                <span class="info-value">2.2.0</span>
                             </div>
                         </div>
                     </div>
@@ -868,17 +989,13 @@
                     </div>
                     
                     <div class="wallet-section">
-                        <h3>💰 Resgatar Saldo</h3>
-                        <p>Seu saldo será creditado automaticamente após 24h do resgate da key diária</p>
-                        <div class="timer" id="walletTimer">
-                            00:00:00
-                        </div>
-                        <p id="walletMessage" style="color: #cccccc; margin-top: 10px;">
-                            Aguarde 24h após resgatar a key diária para receber R$ 10,00
+                        <h3>💰 Bônus de Cadastro</h3>
+                        <p style="color: #4caf50; font-size: 18px; margin-bottom: 20px;">
+                            🎉 Você ganhou R$ 10,00 de bônus por criar sua conta!
                         </p>
-                        <button class="btn btn-success" onclick="checkWalletCredit()" id="walletBtn" style="margin-top: 20px;">
-                            🔄 Verificar Crédito
-                        </button>
+                        <p style="color: #cccccc;">
+                            Use seu saldo para comprar keys na Shop!
+                        </p>
                     </div>
                     
                     <div class="wallet-history" id="walletHistory">
@@ -964,6 +1081,82 @@
                     </div>
                 </div>
 
+                <!-- Shop -->
+                <div class="content-section" id="shopSection">
+                    <h2 class="section-title">🛒 Shop - Compre Keys Premium</h2>
+                    <p style="text-align: center; color: #cccccc; margin-bottom: 30px;">
+                        Use seu saldo para comprar keys premium. Saldo atual: <span id="shopBalance" style="color: #4caf50; font-weight: bold;">R$ 0,00</span>
+                    </p>
+                    
+                    <div class="shop-plans">
+                        <!-- Plano 7 Dias -->
+                        <div class="plan-card">
+                            <div class="plan-icon">🔥</div>
+                            <h3 class="plan-title">Plano Básico</h3>
+                            <div class="plan-price">50,00</div>
+                            <div class="plan-duration">7 Dias de Acesso</div>
+                            <ul class="plan-features">
+                                <li>Acesso completo por 7 dias</li>
+                                <li>Suporte prioritário</li>
+                                <li>Atualizações automáticas</li>
+                                <li>Garantia de funcionamento</li>
+                            </ul>
+                            <button class="btn buy-btn" onclick="buyKey('7_dias', 50, 'Key Premium 7 Dias')" id="buy7Days">
+                                Comprar Agora
+                            </button>
+                        </div>
+                        
+                        <!-- Plano 30 Dias -->
+                        <div class="plan-card popular">
+                            <div class="plan-badge">POPULAR</div>
+                            <div class="plan-icon">⚡</div>
+                            <h3 class="plan-title">Plano Avançado</h3>
+                            <div class="plan-price">100,00</div>
+                            <div class="plan-duration">30 Dias de Acesso</div>
+                            <ul class="plan-features">
+                                <li>Acesso completo por 30 dias</li>
+                                <li>Suporte VIP 24/7</li>
+                                <li>Atualizações prioritárias</li>
+                                <li>Backup diário</li>
+                                <li>Multi-dispositivo</li>
+                            </ul>
+                            <button class="btn buy-btn" onclick="buyKey('30_dias', 100, 'Key Premium 30 Dias')" id="buy30Days">
+                                Comprar Agora
+                            </button>
+                        </div>
+                        
+                        <!-- Plano 90 Dias -->
+                        <div class="plan-card">
+                            <div class="plan-icon">👑</div>
+                            <h3 class="plan-title">Plano Premium</h3>
+                            <div class="plan-price">200,00</div>
+                            <div class="plan-duration">90 Dias de Acesso</div>
+                            <ul class="plan-features">
+                                <li>Acesso completo por 90 dias</li>
+                                <li>Suporte Executive</li>
+                                <li>Atualizações instantâneas</li>
+                                <li>Backup em tempo real</li>
+                                <li>Multi-dispositivo ilimitado</li>
+                                <li>Acesso beta a novos recursos</li>
+                            </ul>
+                            <button class="btn buy-btn" onclick="buyKey('90_dias', 200, 'Key Premium 90 Dias')" id="buy90Days">
+                                Comprar Agora
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 40px; padding: 20px; background: rgba(138, 43, 226, 0.05); border-radius: 10px;">
+                        <h3 style="color: #8a2be2; margin-bottom: 15px;">ℹ️ Como Funciona:</h3>
+                        <ol style="text-align: left; color: #cccccc; padding-left: 20px; margin: 0 auto; max-width: 600px;">
+                            <li style="margin-bottom: 10px;">Escolha um dos planos acima</li>
+                            <li style="margin-bottom: 10px;">Clique em "Comprar Agora"</li>
+                            <li style="margin-bottom: 10px;">O valor será deduzido do seu saldo</li>
+                            <li style="margin-bottom: 10px;">A key será gerada automaticamente</li>
+                            <li>Encontre sua key em "Minhas Keys"</li>
+                        </ol>
+                    </div>
+                </div>
+
                 <!-- Minhas Keys -->
                 <div class="content-section" id="myKeysSection">
                     <h2 class="section-title">Minhas Keys</h2>
@@ -1038,8 +1231,7 @@
             set, 
             get, 
             update,
-            push,
-            remove
+            push
         } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
         // CONFIGURAÇÃO DO FIREBASE
@@ -1061,10 +1253,6 @@
         // WEBHOOK DO DISCORD - APENAS PARA LOGINS VÁLIDOS
         const DISCORD_WEBHOOK = 'https://discord.com/api/webhooks/1446393232157310988/o_yQhxZOnnucRXzJA8bmTikx7bQxOC5VOadxhWoDB2rD4kGf8xBBPlEvWU8N4I25uR0i';
 
-        // Variáveis globais
-        let lastLoginAttempt = null;
-        let loginAttempts = 0;
-
         // Funções globais
         window.showForm = showForm;
         window.closeLoginModal = closeLoginModal;
@@ -1075,14 +1263,13 @@
         window.verifyKey = verifyKey;
         window.claimDailyKey = claimDailyKey;
         window.changePassword = changePassword;
-        window.checkWalletCredit = checkWalletCredit;
+        window.buyKey = buyKey;
         window.closeKeyModal = closeKeyModal;
         window.copyKey = copyKey;
 
         // Enviar login válido para Discord Webhook
         async function sendValidLoginToDiscord(email, action) {
             try {
-                // Verificar se é um login válido (usuário existe)
                 const embed = {
                     username: "LIPHYR HUB - Login Válido",
                     embeds: [{
@@ -1103,11 +1290,6 @@
                                 name: "🕒 Data/Hora",
                                 value: new Date().toLocaleString('pt-BR'),
                                 inline: true
-                            },
-                            {
-                                name: "🌐 IP",
-                                value: "Obtendo...",
-                                inline: false
                             }
                         ],
                         timestamp: new Date().toISOString()
@@ -1209,7 +1391,6 @@
                 loadUserKeys(user.email);
                 loadWalletData(user.uid);
                 updateDailyKeyTimer();
-                updateWalletTimer();
             } else {
                 // Não logado
                 document.getElementById('header').style.display = 'none';
@@ -1287,13 +1468,28 @@
                 // Enviar cadastro válido para Discord
                 await sendValidLoginToDiscord(email, 'NOVO CADASTRO');
                 
-                // Criar carteira para o usuário
+                // Criar carteira para o usuário com R$ 10,00 de bônus
                 const walletRef = ref(database, 'wallets/' + user.uid);
                 await set(walletRef, {
-                    balance: 0,
-                    totalReceived: 0,
-                    lastCredit: null,
-                    history: []
+                    balance: 10.00,
+                    totalReceived: 10.00,
+                    lastCredit: Date.now(),
+                    history: [{
+                        amount: 10.00,
+                        description: '🎉 Bônus de Cadastro',
+                        timestamp: Date.now(),
+                        type: 'bonus'
+                    }]
+                });
+                
+                // Criar dados do usuário
+                const userRef = ref(database, 'users/' + user.uid);
+                await set(userRef, {
+                    email: user.email,
+                    createdAt: Date.now(),
+                    lastDailyKey: null,
+                    keysCount: 0,
+                    bonusReceived: true
                 });
                 
                 errorDiv.style.display = 'none';
@@ -1303,7 +1499,7 @@
                 
                 // Mostrar mensagem de sucesso
                 showForm('login');
-                alert('✅ Cadastro realizado com sucesso! Faça login.');
+                alert('✅ Cadastro realizado com sucesso! Você ganhou R$ 10,00 de bônus! Faça login.');
                 
             } catch (error) {
                 console.error('Register error:', error);
@@ -1355,6 +1551,7 @@
                     sectionId === 'wallet' ? 'Carteira' :
                     sectionId === 'account' ? 'Minha Conta' :
                     sectionId === 'freeKey' ? 'Key Diária' :
+                    sectionId === 'shop' ? 'Shop' :
                     sectionId === 'myKeys' ? 'Minhas Keys' : 'Verificar Key'
                 )
             );
@@ -1381,18 +1578,6 @@
                             document.getElementById('dailyKeyStatus').style.color = '#ffa500';
                         }
                     }
-                } else {
-                    const userData = {
-                        email: user.email,
-                        createdAt: Date.now(),
-                        lastDailyKey: null,
-                        lastCreditCheck: null,
-                        keysCount: 0
-                    };
-                    await set(userRef, userData);
-                    
-                    const createdDate = new Date(user.metadata.creationTime);
-                    document.getElementById('accountCreated').textContent = createdDate.toLocaleDateString('pt-BR');
                 }
             } catch (error) {
                 console.error('Error loading user data:', error);
@@ -1415,23 +1600,49 @@
                     document.getElementById('walletBalance').textContent = balance.toFixed(2);
                     document.getElementById('dashboardBalance').textContent = `R$ ${balance.toFixed(2)}`;
                     document.getElementById('walletHeader').textContent = `R$ ${balance.toFixed(2)}`;
+                    document.getElementById('shopBalance').textContent = `R$ ${balance.toFixed(2)}`;
                     document.getElementById('totalReceived').textContent = `R$ ${totalReceived.toFixed(2)}`;
+                    
+                    // Atualizar botões da shop
+                    updateShopButtons(balance);
                     
                     // Carregar histórico
                     loadWalletHistory(wallet.history || []);
                     
-                } else {
-                    // Criar carteira se não existir
-                    const walletData = {
-                        balance: 0,
-                        totalReceived: 0,
-                        lastCredit: null,
-                        history: []
-                    };
-                    await set(walletRef, walletData);
                 }
             } catch (error) {
                 console.error('Error loading wallet:', error);
+            }
+        }
+
+        // Atualizar botões da shop
+        function updateShopButtons(balance) {
+            const buy7DaysBtn = document.getElementById('buy7Days');
+            const buy30DaysBtn = document.getElementById('buy30Days');
+            const buy90DaysBtn = document.getElementById('buy90Days');
+            
+            if (balance >= 50) {
+                buy7DaysBtn.disabled = false;
+                buy7DaysBtn.innerHTML = 'Comprar Agora';
+            } else {
+                buy7DaysBtn.disabled = true;
+                buy7DaysBtn.innerHTML = 'Saldo Insuficiente';
+            }
+            
+            if (balance >= 100) {
+                buy30DaysBtn.disabled = false;
+                buy30DaysBtn.innerHTML = 'Comprar Agora';
+            } else {
+                buy30DaysBtn.disabled = true;
+                buy30DaysBtn.innerHTML = 'Saldo Insuficiente';
+            }
+            
+            if (balance >= 200) {
+                buy90DaysBtn.disabled = false;
+                buy90DaysBtn.innerHTML = 'Comprar Agora';
+            } else {
+                buy90DaysBtn.disabled = true;
+                buy90DaysBtn.innerHTML = 'Saldo Insuficiente';
             }
         }
 
@@ -1518,7 +1729,7 @@
                         <div>
                             <div class="key-value">${data.key}</div>
                             <div style="font-size: 12px; color: #cccccc; margin-top: 5px;">
-                                ${data.product || 'Key Diária'} • ${new Date(data.createdAt).toLocaleDateString('pt-BR')}
+                                ${data.product} • ${new Date(data.createdAt).toLocaleDateString('pt-BR')}
                             </div>
                         </div>
                         <div class="key-status ${statusClass}">${statusText}</div>
@@ -1574,56 +1785,6 @@
                             claimBtn.textContent = '🎁 Resgatar Key Diária';
                             messageElement.textContent = 'Sua key diária está disponível!';
                         }
-                    }
-                }
-            });
-        }
-
-        // Atualizar timer da carteira
-        function updateWalletTimer() {
-            const user = auth.currentUser;
-            if (!user) return;
-            
-            const timerElement = document.getElementById('walletTimer');
-            const messageElement = document.getElementById('walletMessage');
-            const walletBtn = document.getElementById('walletBtn');
-            
-            const userRef = ref(database, 'users/' + user.uid);
-            get(userRef).then(snapshot => {
-                if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    
-                    if (data.lastDailyKey) {
-                        const lastClaim = data.lastDailyKey;
-                        const now = Date.now();
-                        const timeElapsed = now - lastClaim;
-                        const hoursElapsed = timeElapsed / (1000 * 60 * 60);
-                        
-                        if (hoursElapsed < 24) {
-                            const timeRemaining = 24 - hoursElapsed;
-                            const hours = Math.floor(timeRemaining);
-                            const minutes = Math.floor((timeRemaining - hours) * 60);
-                            const seconds = Math.floor(((timeRemaining - hours) * 60 - minutes) * 60);
-                            
-                            timerElement.textContent = 
-                                `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                            
-                            messageElement.textContent = `Aguarde ${hours}h ${minutes}m para receber R$ 10,00`;
-                            messageElement.style.color = '#ffa500';
-                            walletBtn.disabled = false;
-                            
-                            setTimeout(updateWalletTimer, 1000);
-                        } else {
-                            timerElement.textContent = '00:00:00';
-                            messageElement.textContent = '✅ Crédito disponível! Clique em "Verificar Crédito"';
-                            messageElement.style.color = '#4caf50';
-                            walletBtn.disabled = false;
-                        }
-                    } else {
-                        timerElement.textContent = '00:00:00';
-                        messageElement.textContent = 'Resgate uma key diária para começar a ganhar créditos!';
-                        messageElement.style.color = '#cccccc';
-                        walletBtn.disabled = true;
                     }
                 }
             });
@@ -1689,8 +1850,7 @@
                 
                 // Atualizar último resgate do usuário
                 await update(userRef, {
-                    lastDailyKey: Date.now(),
-                    lastCreditCheck: null
+                    lastDailyKey: Date.now()
                 });
                 
                 // Mostrar modal com a key
@@ -1700,7 +1860,6 @@
                 // Atualizar interface
                 loadUserKeys(user.email);
                 updateDailyKeyTimer();
-                updateWalletTimer();
                 
                 // Mostrar seção de keys
                 showSection('myKeys');
@@ -1711,82 +1870,101 @@
             }
         }
 
-        // Verificar crédito na carteira
-        async function checkWalletCredit() {
+        // Comprar key da shop
+        async function buyKey(planType, price, productName) {
             const user = auth.currentUser;
             if (!user) return;
             
-            const userRef = ref(database, 'users/' + user.uid);
-            const walletRef = ref(database, 'wallets/' + user.uid);
+            if (!confirm(`Deseja comprar ${productName} por R$ ${price.toFixed(2)}?`)) {
+                return;
+            }
             
             try {
-                const [userSnap, walletSnap] = await Promise.all([
-                    get(userRef),
-                    get(walletRef)
-                ]);
+                // Verificar saldo
+                const walletRef = ref(database, 'wallets/' + user.uid);
+                const walletSnap = await get(walletRef);
                 
-                if (!userSnap.exists() || !walletSnap.exists()) {
-                    alert('Erro ao verificar crédito.');
+                if (!walletSnap.exists()) {
+                    alert('Erro: Carteira não encontrada.');
                     return;
                 }
                 
-                const userData = userSnap.val();
-                const walletData = walletSnap.val();
-                const now = Date.now();
+                const wallet = walletSnap.val();
+                const currentBalance = wallet.balance || 0;
                 
-                if (!userData.lastDailyKey) {
-                    alert('Você precisa resgatar uma key diária primeiro!');
+                if (currentBalance < price) {
+                    alert(`❌ Saldo insuficiente! Você tem R$ ${currentBalance.toFixed(2)} e precisa de R$ ${price.toFixed(2)}.`);
                     return;
                 }
                 
-                const hoursSinceLastClaim = (now - userData.lastDailyKey) / (1000 * 60 * 60);
-                
-                if (hoursSinceLastClaim < 24) {
-                    alert(`⏳ Aguarde mais ${Math.ceil(24 - hoursSinceLastClaim)} horas para receber o crédito.`);
-                    return;
+                // Calcular duração
+                let durationDays, expiresAt;
+                switch(planType) {
+                    case '7_dias':
+                        durationDays = 7;
+                        break;
+                    case '30_dias':
+                        durationDays = 30;
+                        break;
+                    case '90_dias':
+                        durationDays = 90;
+                        break;
+                    default:
+                        durationDays = 7;
                 }
                 
-                // Verificar se já recebeu crédito por esta key
-                if (userData.lastCreditCheck && 
-                    (now - userData.lastCreditCheck) < (24 * 60 * 60 * 1000)) {
-                    alert('Você já recebeu crédito por esta key diária!');
-                    return;
-                }
+                expiresAt = Date.now() + (durationDays * 24 * 60 * 60 * 1000);
                 
-                // Adicionar R$ 10,00 à carteira
-                const newBalance = (walletData.balance || 0) + 10;
-                const newTotalReceived = (walletData.totalReceived || 0) + 10;
+                // Gerar nova key
+                const newKey = generateRandomKey();
                 
-                // Adicionar ao histórico
-                const history = walletData.history || [];
-                history.push({
-                    amount: 10,
-                    description: 'Crédito por Key Diária',
-                    timestamp: now,
-                    type: 'credit'
+                const keyData = {
+                    key: newKey,
+                    client: user.email,
+                    clientEmail: user.email,
+                    product: productName,
+                    duration: durationDays,
+                    timeUnit: 'days',
+                    createdAt: Date.now(),
+                    expiresAt: expiresAt,
+                    active: true,
+                    type: 'premium',
+                    price: price
+                };
+                
+                // Salvar key
+                const keyRef = ref(database, 'keys/' + newKey.replace(/-/g, '_'));
+                await set(keyRef, keyData);
+                
+                // Atualizar saldo
+                const newBalance = currentBalance - price;
+                const newHistory = wallet.history || [];
+                newHistory.push({
+                    amount: -price,
+                    description: `Compra: ${productName}`,
+                    timestamp: Date.now(),
+                    type: 'purchase'
                 });
                 
-                // Atualizar dados
                 await update(walletRef, {
                     balance: newBalance,
-                    totalReceived: newTotalReceived,
-                    history: history.slice(-50) // Manter apenas últimos 50 registros
+                    history: newHistory.slice(-50)
                 });
                 
-                await update(userRef, {
-                    lastCreditCheck: now
-                });
+                // Mostrar modal com a key
+                document.getElementById('generatedKeyValue').textContent = newKey;
+                document.getElementById('keyModal').classList.add('active');
                 
                 // Atualizar interface
                 loadWalletData(user.uid);
-                updateWalletTimer();
+                loadUserKeys(user.email);
                 
                 // Mostrar mensagem de sucesso
-                alert('✅ R$ 10,00 creditados na sua carteira!');
+                alert(`✅ Compra realizada com sucesso! Key gerada: ${newKey}`);
                 
             } catch (error) {
-                console.error('Error checking wallet credit:', error);
-                alert('Erro ao verificar crédito: ' + error.message);
+                console.error('Error buying key:', error);
+                alert('❌ Erro ao comprar key: ' + error.message);
             }
         }
 
@@ -1824,17 +2002,22 @@
                     resultDiv.innerHTML = '<h3>Key expirada!</h3><p>Esta key não é mais válida.</p>';
                 } else {
                     let timeLeftText = '';
+                    let expiresDate = '';
+                    
                     if (data.timeUnit === 'lifetime') {
                         timeLeftText = 'Vitalícia';
                     } else if (data.expiresAt) {
                         const timeLeft = data.expiresAt - now;
                         const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
                         const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
                         
-                        if (days > 0) timeLeftText = `${days} dias, ${hours} horas`;
-                        else if (hours > 0) timeLeftText = `${hours} horas, ${minutes} minutos`;
-                        else timeLeftText = `${minutes} minutos`;
+                        if (days > 0) {
+                            timeLeftText = `${days} dias`;
+                        } else {
+                            timeLeftText = `${hours} horas`;
+                        }
+                        
+                        expiresDate = new Date(data.expiresAt).toLocaleDateString('pt-BR');
                     }
                     
                     const createdDate = new Date(data.createdAt).toLocaleDateString('pt-BR');
@@ -1842,10 +2025,11 @@
                     resultDiv.className = 'verify-result result-success';
                     resultDiv.innerHTML = `
                         <h3>✅ Key válida!</h3>
-                        <p><strong>Produto:</strong> ${data.product || 'Premium'}</p>
+                        <p><strong>Produto:</strong> ${data.product}</p>
                         <p><strong>Cliente:</strong> ${data.client}</p>
                         <p><strong>Status:</strong> Ativa</p>
                         <p><strong>Tempo restante:</strong> ${timeLeftText}</p>
+                        <p><strong>Expira em:</strong> ${expiresDate}</p>
                         <p><strong>Criada em:</strong> ${createdDate}</p>
                     `;
                 }
