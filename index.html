@@ -1701,12 +1701,16 @@
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
                 
-                // Criar carteira com R$ 10,00 de bônus
-                const walletRef = ref(database, 'wallets/' + user.uid);
+                // CORREÇÃO: Criar carteira com R$ 10,00 de bônus - NO CAMINHO CORRETO
+                const walletId = 'user_' + Date.now(); // ID diferente do UID
+                const walletRef = ref(database, 'wallets/' + walletId);
+                
                 await set(walletRef, {
                     balance: 10.00,
                     totalReceived: 10.00,
                     lastCredit: Date.now(),
+                    userId: user.uid, // Adicionar UID do usuário
+                    userEmail: user.email,
                     history: [{
                         amount: 10.00,
                         description: '🎉 Bônus de Cadastro',
@@ -1715,14 +1719,18 @@
                     }]
                 });
                 
-                // Criar dados do usuário
-                const userRef = ref(database, 'users/' + user.uid);
+                // Criar dados do usuário - NO CAMINHO CORRETO
+                const userId = 'user_' + Date.now();
+                const userRef = ref(database, 'users/' + userId);
+                
                 await set(userRef, {
                     email: user.email,
+                    firebaseUid: user.uid, // Adicionar UID do Firebase
                     createdAt: Date.now(),
                     lastDailyKey: null,
                     keysCount: 0,
-                    bonusReceived: true
+                    bonusReceived: true,
+                    walletId: walletId // Referência para a carteira
                 });
                 
                 errorDiv.style.display = 'none';
@@ -1791,36 +1799,151 @@
             if (menuItem) menuItem.classList.add('active');
         }
 
-        // Carregar dados do usuário
+        // CORREÇÃO: Carregar dados do usuário
         async function loadUserData(user) {
             try {
-                const userRef = ref(database, 'users/' + user.uid);
-                const snapshot = await get(userRef);
+                console.log('🔍 Buscando dados do usuário:', user.email);
+                
+                // Buscar usuário pelo email
+                const usersRef = ref(database, 'users');
+                const snapshot = await get(usersRef);
+                
+                let userData = null;
+                let userId = null;
                 
                 if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    const createdDate = new Date(data.createdAt || user.metadata.creationTime);
+                    const users = snapshot.val();
+                    
+                    for (const [key, data] of Object.entries(users)) {
+                        if (data.email === user.email) {
+                            userData = data;
+                            userId = key;
+                            break;
+                        }
+                    }
+                }
+                
+                if (userData) {
+                    const createdDate = new Date(userData.createdAt || Date.now());
                     document.getElementById('accountCreated').textContent = createdDate.toLocaleDateString('pt-BR');
                     
-                    if (data.lastDailyKey) {
+                    if (userData.lastDailyKey) {
                         const now = Date.now();
-                        const hoursSinceLastClaim = (now - data.lastDailyKey) / (1000 * 60 * 60);
+                        const hoursSinceLastClaim = (now - userData.lastDailyKey) / (1000 * 60 * 60);
                         
                         if (hoursSinceLastClaim < 24) {
                             document.getElementById('dailyKeyStatus').textContent = 'Aguardando reset';
                             document.getElementById('dailyKeyStatus').style.color = '#ffa500';
                         }
                     }
+                    
+                    // Carregar carteira
+                    if (userData.walletId) {
+                        loadWalletData(userData.walletId);
+                    } else {
+                        // Buscar carteira pelo email
+                        await findWalletByEmail(user.email);
+                    }
+                } else {
+                    console.log('Usuário não encontrado no banco de dados');
                 }
             } catch (error) {
                 console.error('Error loading user data:', error);
             }
         }
 
-        // Carregar dados da carteira
-        async function loadWalletData(userId) {
+        // CORREÇÃO: Buscar carteira pelo email
+        async function findWalletByEmail(userEmail) {
             try {
-                const walletRef = ref(database, 'wallets/' + userId);
+                console.log('🔍 Buscando carteira para email:', userEmail);
+                
+                const walletsRef = ref(database, 'wallets');
+                const snapshot = await get(walletsRef);
+                
+                if (snapshot.exists()) {
+                    const wallets = snapshot.val();
+                    
+                    for (const [walletId, wallet] of Object.entries(wallets)) {
+                        if (wallet.userEmail === userEmail) {
+                            console.log('✅ Carteira encontrada:', walletId);
+                            loadWalletData(walletId);
+                            return;
+                        }
+                    }
+                    
+                    console.log('❌ Carteira não encontrada para email:', userEmail);
+                    // Criar carteira se não existir
+                    await createWalletForUser(userEmail);
+                }
+            } catch (error) {
+                console.error('Error finding wallet:', error);
+            }
+        }
+
+        // CORREÇÃO: Criar carteira se não existir
+        async function createWalletForUser(userEmail) {
+            try {
+                const user = auth.currentUser;
+                if (!user) return;
+                
+                console.log('🔄 Criando nova carteira para:', userEmail);
+                
+                const walletId = 'user_' + Date.now();
+                const walletRef = ref(database, 'wallets/' + walletId);
+                
+                await set(walletRef, {
+                    balance: 0.00,
+                    totalReceived: 0.00,
+                    lastCredit: Date.now(),
+                    userId: user.uid,
+                    userEmail: userEmail,
+                    createdAt: Date.now(),
+                    history: []
+                });
+                
+                console.log('✅ Carteira criada:', walletId);
+                
+                // Atualizar usuário com walletId
+                await updateUserWalletId(userEmail, walletId);
+                
+                // Carregar nova carteira
+                loadWalletData(walletId);
+                
+            } catch (error) {
+                console.error('Error creating wallet:', error);
+            }
+        }
+
+        // Atualizar usuário com ID da carteira
+        async function updateUserWalletId(userEmail, walletId) {
+            try {
+                const usersRef = ref(database, 'users');
+                const snapshot = await get(usersRef);
+                
+                if (snapshot.exists()) {
+                    const users = snapshot.val();
+                    
+                    for (const [userId, userData] of Object.entries(users)) {
+                        if (userData.email === userEmail) {
+                            await update(ref(database, 'users/' + userId), {
+                                walletId: walletId
+                            });
+                            console.log('✅ Usuário atualizado com walletId:', walletId);
+                            break;
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error updating user walletId:', error);
+            }
+        }
+
+        // CORREÇÃO: Carregar dados da carteira
+        async function loadWalletData(walletId) {
+            try {
+                console.log('💰 Buscando carteira ID:', walletId);
+                
+                const walletRef = ref(database, 'wallets/' + walletId);
                 const snapshot = await get(walletRef);
                 
                 if (snapshot.exists()) {
@@ -1829,6 +1952,8 @@
                     // Atualizar saldo
                     const balance = wallet.balance || 0;
                     const totalReceived = wallet.totalReceived || 0;
+                    
+                    console.log('✅ Saldo encontrado:', balance);
                     
                     document.getElementById('walletBalance').textContent = balance.toFixed(2);
                     document.getElementById('dashboardBalance').textContent = `R$ ${balance.toFixed(2)}`;
@@ -1842,9 +1967,15 @@
                     // Carregar histórico
                     loadWalletHistory(wallet.history || []);
                     
+                } else {
+                    console.log('❌ Carteira não encontrada no Firebase:', walletId);
+                    document.getElementById('walletBalance').textContent = '0,00';
+                    document.getElementById('walletHeader').textContent = 'R$ 0,00';
+                    document.getElementById('shopBalance').textContent = 'R$ 0,00';
                 }
             } catch (error) {
                 console.error('Error loading wallet:', error);
+                alert('❌ Erro ao carregar carteira: ' + error.message);
             }
         }
 
@@ -1990,13 +2121,22 @@
             const claimBtn = document.getElementById('claimBtn');
             const dailyClaimBtn = document.getElementById('dailyClaimBtn');
             
-            const userRef = ref(database, 'users/' + user.uid);
-            get(userRef).then(snapshot => {
+            // Buscar usuário pelo email
+            const usersRef = ref(database, 'users');
+            get(usersRef).then(snapshot => {
                 if (snapshot.exists()) {
-                    const data = snapshot.val();
+                    const users = snapshot.val();
+                    let userData = null;
                     
-                    if (data.lastDailyKey) {
-                        const lastClaim = data.lastDailyKey;
+                    for (const [key, data] of Object.entries(users)) {
+                        if (data.email === user.email) {
+                            userData = data;
+                            break;
+                        }
+                    }
+                    
+                    if (userData && userData.lastDailyKey) {
+                        const lastClaim = userData.lastDailyKey;
                         const now = Date.now();
                         const timeElapsed = now - lastClaim;
                         const hoursElapsed = timeElapsed / (1000 * 60 * 60);
@@ -2064,7 +2204,7 @@
             return key;
         }
 
-        // CORREÇÃO: Resgatar key diária FUNCIONAL
+        // CORREÇÃO: Resgatar key diária
         async function claimDailyKey() {
             const user = auth.currentUser;
             if (!user) {
@@ -2073,23 +2213,31 @@
             }
             
             try {
-                // Verificar se já resgatou hoje
-                const userRef = ref(database, 'users/' + user.uid);
-                const snapshot = await get(userRef);
+                // Buscar usuário pelo email
+                const usersRef = ref(database, 'users');
+                const snapshot = await get(usersRef);
                 
                 let canClaim = true;
+                let userId = null;
                 
                 if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    const now = Date.now();
+                    const users = snapshot.val();
                     
-                    if (data.lastDailyKey) {
-                        const lastClaim = data.lastDailyKey;
-                        const hoursSinceLastClaim = (now - lastClaim) / (1000 * 60 * 60);
-                        
-                        if (hoursSinceLastClaim < 24) {
-                            alert('⏳ Você já resgatou sua key diária hoje! Volte amanhã.');
-                            canClaim = false;
+                    for (const [key, userData] of Object.entries(users)) {
+                        if (userData.email === user.email) {
+                            userId = key;
+                            const now = Date.now();
+                            
+                            if (userData.lastDailyKey) {
+                                const lastClaim = userData.lastDailyKey;
+                                const hoursSinceLastClaim = (now - lastClaim) / (1000 * 60 * 60);
+                                
+                                if (hoursSinceLastClaim < 24) {
+                                    alert('⏳ Você já resgatou sua key diária hoje! Volte amanhã.');
+                                    canClaim = false;
+                                }
+                            }
+                            break;
                         }
                     }
                 }
@@ -2120,9 +2268,11 @@
                 }
                 
                 // Atualizar último resgate do usuário
-                await update(userRef, {
-                    lastDailyKey: Date.now()
-                });
+                if (userId) {
+                    await update(ref(database, 'users/' + userId), {
+                        lastDailyKey: Date.now()
+                    });
+                }
                 
                 // Mostrar modal com a key
                 document.getElementById('generatedKeyValue').textContent = newKey;
@@ -2135,32 +2285,8 @@
                 // Programar bônus de R$ 10,00 após 24h
                 setTimeout(async () => {
                     try {
-                        const walletRef = ref(database, 'wallets/' + user.uid);
-                        const walletSnap = await get(walletRef);
-                        
-                        if (walletSnap.exists()) {
-                            const wallet = walletSnap.val();
-                            const newBalance = (wallet.balance || 0) + 10.00;
-                            const newTotal = (wallet.totalReceived || 0) + 10.00;
-                            const newHistory = wallet.history || [];
-                            
-                            newHistory.push({
-                                amount: 10.00,
-                                description: '💰 Bônus da Key Diária (24h depois)',
-                                timestamp: Date.now(),
-                                type: 'daily_bonus'
-                            });
-                            
-                            await update(walletRef, {
-                                balance: newBalance,
-                                totalReceived: newTotal,
-                                history: newHistory.slice(-50)
-                            });
-                            
-                            // Atualizar UI
-                            loadWalletData(user.uid);
-                            alert('🎉 Bônus de R$ 10,00 creditado na sua carteira!');
-                        }
+                        // Buscar carteira do usuário
+                        await addDailyKeyBonus(user.email);
                     } catch (bonusError) {
                         console.error('Erro ao adicionar bônus:', bonusError);
                     }
@@ -2172,7 +2298,48 @@
             }
         }
 
-        // Comprar key da shop
+        // CORREÇÃO: Adicionar bônus da key diária
+        async function addDailyKeyBonus(userEmail) {
+            try {
+                // Buscar carteira pelo email
+                const walletsRef = ref(database, 'wallets');
+                const snapshot = await get(walletsRef);
+                
+                if (snapshot.exists()) {
+                    const wallets = snapshot.val();
+                    
+                    for (const [walletId, wallet] of Object.entries(wallets)) {
+                        if (wallet.userEmail === userEmail) {
+                            const newBalance = (wallet.balance || 0) + 10.00;
+                            const newTotal = (wallet.totalReceived || 0) + 10.00;
+                            const newHistory = wallet.history || [];
+                            
+                            newHistory.push({
+                                amount: 10.00,
+                                description: '💰 Bônus da Key Diária (24h depois)',
+                                timestamp: Date.now(),
+                                type: 'daily_bonus'
+                            });
+                            
+                            await update(ref(database, 'wallets/' + walletId), {
+                                balance: newBalance,
+                                totalReceived: newTotal,
+                                history: newHistory.slice(-50)
+                            });
+                            
+                            // Atualizar UI
+                            loadWalletData(walletId);
+                            alert('🎉 Bônus de R$ 10,00 creditado na sua carteira!');
+                            break;
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error adding daily bonus:', error);
+            }
+        }
+
+        // CORREÇÃO: Comprar key da shop
         async function buyKey(planType, price, productName) {
             const user = auth.currentUser;
             if (!user) {
@@ -2185,17 +2352,33 @@
             }
             
             try {
-                // Verificar saldo
-                const walletRef = ref(database, 'wallets/' + user.uid);
-                const walletSnap = await get(walletRef);
+                // Buscar carteira pelo email
+                const walletsRef = ref(database, 'wallets');
+                const snapshot = await get(walletsRef);
                 
-                if (!walletSnap.exists()) {
-                    alert('❌ Carteira não encontrada!');
+                let walletFound = false;
+                let walletId = null;
+                let walletData = null;
+                
+                if (snapshot.exists()) {
+                    const wallets = snapshot.val();
+                    
+                    for (const [id, wallet] of Object.entries(wallets)) {
+                        if (wallet.userEmail === user.email) {
+                            walletFound = true;
+                            walletId = id;
+                            walletData = wallet;
+                            break;
+                        }
+                    }
+                }
+                
+                if (!walletFound) {
+                    alert('❌ Carteira não encontrada! Entre em contato com o suporte.');
                     return;
                 }
                 
-                const wallet = walletSnap.val();
-                const currentBalance = wallet.balance || 0;
+                const currentBalance = walletData.balance || 0;
                 
                 if (currentBalance < price) {
                     alert(`❌ Saldo insuficiente! Você tem R$ ${currentBalance.toFixed(2)} e precisa de R$ ${price.toFixed(2)}.`);
@@ -2245,7 +2428,7 @@
                 
                 // Atualizar saldo
                 const newBalance = currentBalance - price;
-                const newHistory = wallet.history || [];
+                const newHistory = walletData.history || [];
                 newHistory.push({
                     amount: -price,
                     description: `Compra: ${productName}`,
@@ -2253,7 +2436,7 @@
                     type: 'purchase'
                 });
                 
-                await update(walletRef, {
+                await update(ref(database, 'wallets/' + walletId), {
                     balance: newBalance,
                     history: newHistory.slice(-50)
                 });
@@ -2263,7 +2446,7 @@
                 document.getElementById('keyModal').classList.add('active');
                 
                 // Atualizar interface
-                loadWalletData(user.uid);
+                loadWalletData(walletId);
                 loadUserKeys(user.email);
                 
                 // Mostrar mensagem de sucesso
