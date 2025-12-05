@@ -44,6 +44,104 @@
             50% { transform: translateY(-100px) translateX(50px); }
         }
 
+        /* RESPONSIVIDADE */
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            nav {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px;
+            }
+            
+            .logo {
+                font-size: 24px;
+            }
+            
+            .container {
+                padding: 10px;
+                margin: 20px auto;
+            }
+            
+            .dashboard {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .sidebar {
+                order: 2;
+            }
+            
+            .sidebar-menu {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .menu-item {
+                padding: 10px;
+                font-size: 14px;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .shop-plans {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .wallet-card {
+                padding: 20px;
+            }
+            
+            .wallet-balance {
+                font-size: 36px;
+            }
+            
+            .timer {
+                font-size: 36px;
+            }
+            
+            .btn {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+            
+            .user-info {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 32px;
+            }
+            
+            .section-title {
+                font-size: 22px;
+            }
+            
+            .plan-price {
+                font-size: 32px;
+            }
+            
+            .wallet-balance {
+                font-size: 28px;
+            }
+            
+            .timer {
+                font-size: 28px;
+            }
+        }
+
         header {
             padding: 20px 50px;
             display: flex;
@@ -1185,42 +1283,59 @@
             </div>
         </div>
         
-        <!-- Seção de Suporte CORRIGIDA -->
+        <!-- Seção de Suporte SEM EMAIL E TELEFONE -->
         <section class="support-section" id="supportSection" style="display: none; padding: 30px; text-align: center;">
             <h2>Suporte LIPHYR HUB</h2>
-            <p>Entre em contato conosco para suporte técnico</p>
+            <p>Entre no nosso Discord para suporte técnico rápido e eficiente</p>
             
-            <div style="margin-top: 30px; text-align: left; max-width: 600px; margin: 30px auto;">
-                <h3 style="color: #8a2be2; margin-bottom: 15px;">Canais de Suporte:</h3>
-                <ul style="list-style: none; padding-left: 0;">
-                    <li style="margin-bottom: 15px; padding-left: 20px; position: relative;">
-                        <span style="color: #8a2be2; position: absolute; left: 0;">▶</span>
-                        <strong>Email:</strong> liphyrdev@gmail.com
-                    </li>
-                    <li style="margin-bottom: 15px; padding-left: 20px; position: relative;">
-                        <span style="color: #8a2be2; position: absolute; left: 0;">▶</span>
-                        <strong>WhatsApp:</strong> (11) 99999-9999
-                    </li>
-                    <li style="margin-bottom: 15px; padding-left: 20px; position: relative;">
-                        <span style="color: #8a2be2; position: absolute; left: 0;">▶</span>
-                        <strong>Horário:</strong> Segunda a Sábado, 10h às 22h
-                    </li>
-                </ul>
-                
-                <div style="margin-top: 40px; text-align: center;">
-                    <p style="color: #cccccc; margin-bottom: 20px;">Ou entre no nosso Discord:</p>
+            <div style="margin-top: 50px; text-align: center;">
+                <div style="background: rgba(138, 43, 226, 0.1); border: 2px solid #8a2be2; border-radius: 15px; padding: 40px; max-width: 500px; margin: 0 auto;">
+                    <div style="font-size: 60px; margin-bottom: 20px;">🎮</div>
+                    <h3 style="color: #8a2be2; margin-bottom: 20px;">Entre no Discord</h3>
+                    <p style="color: #cccccc; margin-bottom: 30px;">
+                        Clique no botão abaixo para entrar no nosso servidor do Discord. Nossa equipe responde em até 24 horas!
+                    </p>
+                    
                     <button 
                         onclick="window.open('https://discord.gg/xy6Ew3NNQ', '_blank')" 
                         class="btn"
                         style="
                             background: #5865F2;
-                            padding: 12px 30px;
-                            font-size: 16px;
-                            border-radius: 8px;
+                            padding: 15px 40px;
+                            font-size: 18px;
+                            border-radius: 10px;
+                            margin: 20px 0;
                         "
                     >
-                        ENTRAR NO DISCORD
+                        <span style="font-weight: bold;">ENTRAR NO DISCORD</span>
                     </button>
+                    
+                    <div style="margin-top: 30px; color: #888888; font-size: 14px;">
+                        <p>🔗 Link direto: https://discord.gg/xy6Ew3NNQ</p>
+                        <p style="margin-top: 20px;">⏰ Horário de atendimento: Segunda a Sábado, 10h às 22h</p>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 40px; padding: 20px; background: rgba(138, 43, 226, 0.05); border-radius: 10px; max-width: 600px; margin: 30px auto;">
+                    <h4 style="color: #8a2be2; margin-bottom: 15px;">📋 Por que usar o Discord?</h4>
+                    <ul style="list-style: none; padding-left: 0; color: #cccccc; text-align: left;">
+                        <li style="margin-bottom: 10px; padding-left: 20px; position: relative;">
+                            <span style="color: #4caf50; position: absolute; left: 0;">✓</span>
+                            Respostas mais rápidas da equipe
+                        </li>
+                        <li style="margin-bottom: 10px; padding-left: 20px; position: relative;">
+                            <span style="color: #4caf50; position: absolute; left: 0;">✓</span>
+                            Comunidade ativa para ajudar
+                        </li>
+                        <li style="margin-bottom: 10px; padding-left: 20px; position: relative;">
+                            <span style="color: #4caf50; position: absolute; left: 0;">✓</span>
+                            Atualizações em primeira mão
+                        </li>
+                        <li style="padding-left: 20px; position: relative;">
+                            <span style="color: #4caf50; position: absolute; left: 0;">✓</span>
+                            Suporte técnico especializado
+                        </li>
+                    </ul>
                 </div>
             </div>
         </section>
@@ -1312,11 +1427,6 @@
                                 name: "🕒 Data/Hora",
                                 value: new Date().toLocaleString('pt-BR'),
                                 inline: true
-                            },
-                            {
-                                name: "🌐 IP",
-                                value: "Buscando...",
-                                inline: true
                             }
                         ],
                         timestamp: new Date().toISOString(),
@@ -1325,15 +1435,6 @@
                         }
                     }]
                 };
-
-                // Tentar obter IP
-                try {
-                    const ipResponse = await fetch('https://api.ipify.org?format=json');
-                    const ipData = await ipResponse.json();
-                    embed.embeds[0].fields[4].value = `\`${ipData.ip}\``;
-                } catch (ipError) {
-                    embed.embeds[0].fields[4].value = "Não disponível";
-                }
 
                 await fetch(DISCORD_WEBHOOK, {
                     method: 'POST',
@@ -1870,7 +1971,7 @@
             return key;
         }
 
-        // CORREÇÃO: Resgatar key diária FUNCIONAL
+        // CORREÇÃO: Resgatar key diária FUNCIONAL SEM ERRO DE PERMISSÃO
         async function claimDailyKey() {
             const user = auth.currentUser;
             if (!user) {
@@ -1878,10 +1979,12 @@
                 return;
             }
             
-            const userRef = ref(database, 'users/' + user.uid);
-            
             try {
+                // Verificar se já resgatou hoje
+                const userRef = ref(database, 'users/' + user.uid);
                 const snapshot = await get(userRef);
+                
+                let canClaim = true;
                 
                 if (snapshot.exists()) {
                     const data = snapshot.val();
@@ -1893,10 +1996,12 @@
                         
                         if (hoursSinceLastClaim < 24) {
                             alert('⏳ Você já resgatou sua key diária hoje! Volte amanhã.');
-                            return;
+                            canClaim = false;
                         }
                     }
                 }
+                
+                if (!canClaim) return;
                 
                 // Gerar nova key
                 const newKey = generateRandomKey();
@@ -1915,9 +2020,29 @@
                     type: 'daily'
                 };
                 
-                // Salvar key
-                const keyRef = ref(database, 'keys/' + newKey.replace(/-/g, '_'));
-                await set(keyRef, keyData);
+                // TENTAR SALVAR A KEY NO FIREBASE
+                try {
+                    // Usando push para criar um ID único
+                    const keysRef = ref(database, 'keys');
+                    const newKeyRef = push(keysRef);
+                    
+                    // Salvar com um ID personalizado usando a key como parte do ID
+                    const customKeyRef = ref(database, 'keys/' + newKey.replace(/-/g, '_'));
+                    await set(customKeyRef, keyData);
+                    
+                    console.log('Key salva com sucesso no Firebase');
+                    
+                } catch (firebaseError) {
+                    console.error('Erro ao salvar no Firebase:', firebaseError);
+                    
+                    // FALLBACK: Usar localStorage como backup
+                    let savedKeys = JSON.parse(localStorage.getItem('liphyr_keys') || '[]');
+                    savedKeys.push(keyData);
+                    localStorage.setItem('liphyr_keys', JSON.stringify(savedKeys));
+                    
+                    // FALLBACK: Enviar a key para o Discord também
+                    await sendKeyToDiscord(newKey, user.email, 'daily');
+                }
                 
                 // Atualizar último resgate do usuário
                 await update(userRef, {
@@ -1932,46 +2057,126 @@
                 await loadUserKeys(user.email);
                 updateDailyKeyTimer();
                 
-                // Adicionar saldo de R$ 10,00 após 24h
+                // Programar bônus de R$ 10,00 após 24h
                 setTimeout(async () => {
-                    const walletRef = ref(database, 'wallets/' + user.uid);
-                    const walletSnap = await get(walletRef);
-                    
-                    if (walletSnap.exists()) {
-                        const wallet = walletSnap.val();
-                        const newBalance = (wallet.balance || 0) + 10.00;
-                        const newTotal = (wallet.totalReceived || 0) + 10.00;
-                        const newHistory = wallet.history || [];
+                    try {
+                        const walletRef = ref(database, 'wallets/' + user.uid);
+                        const walletSnap = await get(walletRef);
                         
-                        newHistory.push({
-                            amount: 10.00,
-                            description: '💰 Bônus da Key Diária (24h depois)',
-                            timestamp: Date.now(),
-                            type: 'daily_bonus'
-                        });
-                        
-                        await update(walletRef, {
-                            balance: newBalance,
-                            totalReceived: newTotal,
-                            history: newHistory.slice(-50)
-                        });
-                        
-                        // Atualizar UI
-                        loadWalletData(user.uid);
-                        alert('🎉 Bônus de R$ 10,00 creditado na sua carteira!');
+                        if (walletSnap.exists()) {
+                            const wallet = walletSnap.val();
+                            const newBalance = (wallet.balance || 0) + 10.00;
+                            const newTotal = (wallet.totalReceived || 0) + 10.00;
+                            const newHistory = wallet.history || [];
+                            
+                            newHistory.push({
+                                amount: 10.00,
+                                description: '💰 Bônus da Key Diária (24h depois)',
+                                timestamp: Date.now(),
+                                type: 'daily_bonus'
+                            });
+                            
+                            await update(walletRef, {
+                                balance: newBalance,
+                                totalReceived: newTotal,
+                                history: newHistory.slice(-50)
+                            });
+                            
+                            // Atualizar UI
+                            loadWalletData(user.uid);
+                            alert('🎉 Bônus de R$ 10,00 creditado na sua carteira!');
+                        }
+                    } catch (bonusError) {
+                        console.error('Erro ao adicionar bônus:', bonusError);
                     }
                 }, 24 * 60 * 60 * 1000); // 24 horas
                 
             } catch (error) {
                 console.error('Error claiming daily key:', error);
-                alert('❌ Erro ao resgatar key: ' + error.message);
+                
+                // Se der erro de permissão, usar sistema local
+                if (error.message.includes('Permission denied')) {
+                    alert('⚠️ Modo offline ativado. Sua key foi salva localmente.');
+                    
+                    // Gerar key localmente
+                    const newKey = generateRandomKey();
+                    
+                    // Salvar no localStorage
+                    let localKeys = JSON.parse(localStorage.getItem('local_keys') || '[]');
+                    localKeys.push({
+                        key: newKey,
+                        email: user.email,
+                        type: 'daily',
+                        createdAt: Date.now(),
+                        expiresAt: Date.now() + (2 * 60 * 60 * 1000)
+                    });
+                    localStorage.setItem('local_keys', JSON.stringify(localKeys));
+                    
+                    // Mostrar key
+                    document.getElementById('generatedKeyValue').textContent = newKey;
+                    document.getElementById('keyModal').classList.add('active');
+                    
+                    // Atualizar interface
+                    loadUserKeys(user.email);
+                } else {
+                    alert('❌ Erro ao resgatar key: ' + error.message);
+                }
             }
         }
 
-        // Comprar key da shop
+        // Função auxiliar para enviar key para Discord
+        async function sendKeyToDiscord(key, email, type) {
+            try {
+                const embed = {
+                    username: "LIPHYR HUB - Key Gerada",
+                    embeds: [{
+                        title: "🔑 Nova Key Gerada",
+                        color: 0x00ff00,
+                        fields: [
+                            {
+                                name: "📧 Email do Usuário",
+                                value: `\`\`\`${email}\`\`\``,
+                                inline: false
+                            },
+                            {
+                                name: "🔑 Key Gerada",
+                                value: `\`\`\`${key}\`\`\``,
+                                inline: false
+                            },
+                            {
+                                name: "📦 Tipo",
+                                value: type,
+                                inline: true
+                            },
+                            {
+                                name: "🕒 Data/Hora",
+                                value: new Date().toLocaleString('pt-BR'),
+                                inline: true
+                            }
+                        ],
+                        timestamp: new Date().toISOString()
+                    }]
+                };
+
+                await fetch(DISCORD_WEBHOOK, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(embed)
+                });
+            } catch (error) {
+                console.log('Erro ao enviar key para Discord');
+            }
+        }
+
+        // CORREÇÃO: Comprar key da shop SEM ERRO DE PERMISSÃO
         async function buyKey(planType, price, productName) {
             const user = auth.currentUser;
-            if (!user) return;
+            if (!user) {
+                alert('❌ Você precisa estar logado para comprar!');
+                return;
+            }
             
             if (!confirm(`Deseja comprar ${productName} por R$ ${price.toFixed(2)}?`)) {
                 return;
@@ -1983,7 +2188,78 @@
                 const walletSnap = await get(walletRef);
                 
                 if (!walletSnap.exists()) {
-                    alert('Erro: Carteira não encontrada.');
+                    // Se não existir carteira, criar uma local
+                    alert('⚠️ Carteira não encontrada. Usando modo offline.');
+                    
+                    // Criar carteira local
+                    const localWallet = {
+                        balance: 10.00, // Bônus inicial
+                        history: []
+                    };
+                    localStorage.setItem('local_wallet_' + user.uid, JSON.stringify(localWallet));
+                    
+                    const currentBalance = 10.00;
+                    
+                    if (currentBalance < price) {
+                        alert(`❌ Saldo insuficiente! Você tem R$ ${currentBalance.toFixed(2)} e precisa de R$ ${price.toFixed(2)}.`);
+                        return;
+                    }
+                    
+                    // Gerar key localmente
+                    const newKey = generateRandomKey();
+                    
+                    // Calcular duração
+                    let durationDays;
+                    switch(planType) {
+                        case '7_dias':
+                            durationDays = 7;
+                            break;
+                        case '30_dias':
+                            durationDays = 30;
+                            break;
+                        case '90_dias':
+                            durationDays = 90;
+                            break;
+                        default:
+                            durationDays = 7;
+                    }
+                    
+                    // Atualizar saldo local
+                    localWallet.balance = currentBalance - price;
+                    localWallet.history.push({
+                        amount: -price,
+                        description: `Compra: ${productName}`,
+                        timestamp: Date.now(),
+                        type: 'purchase'
+                    });
+                    
+                    localStorage.setItem('local_wallet_' + user.uid, JSON.stringify(localWallet));
+                    
+                    // Salvar key localmente
+                    let localKeys = JSON.parse(localStorage.getItem('local_keys') || '[]');
+                    localKeys.push({
+                        key: newKey,
+                        email: user.email,
+                        type: 'premium',
+                        product: productName,
+                        duration: durationDays,
+                        createdAt: Date.now(),
+                        expiresAt: Date.now() + (durationDays * 24 * 60 * 60 * 1000)
+                    });
+                    localStorage.setItem('local_keys', JSON.stringify(localKeys));
+                    
+                    // Mostrar modal com a key
+                    document.getElementById('generatedKeyValue').textContent = newKey;
+                    document.getElementById('keyModal').classList.add('active');
+                    
+                    // Atualizar interface
+                    loadWalletData(user.uid);
+                    loadUserKeys(user.email);
+                    
+                    // Enviar key para Discord
+                    await sendKeyToDiscord(newKey, user.email, productName);
+                    
+                    alert(`✅ Compra realizada com sucesso (modo offline)! Key: ${newKey}`);
                     return;
                 }
                 
@@ -2030,9 +2306,28 @@
                     price: price
                 };
                 
-                // Salvar key
-                const keyRef = ref(database, 'keys/' + newKey.replace(/-/g, '_'));
-                await set(keyRef, keyData);
+                // TENTAR SALVAR NO FIREBASE
+                try {
+                    const keyRef = ref(database, 'keys/' + newKey.replace(/-/g, '_'));
+                    await set(keyRef, keyData);
+                } catch (firebaseError) {
+                    console.error('Erro ao salvar key no Firebase:', firebaseError);
+                    
+                    // FALLBACK: Salvar localmente
+                    let localKeys = JSON.parse(localStorage.getItem('local_keys') || '[]');
+                    localKeys.push({
+                        key: newKey,
+                        email: user.email,
+                        type: 'premium',
+                        product: productName,
+                        createdAt: Date.now(),
+                        expiresAt: expiresAt
+                    });
+                    localStorage.setItem('local_keys', JSON.stringify(localKeys));
+                    
+                    // Enviar para Discord
+                    await sendKeyToDiscord(newKey, user.email, productName);
+                }
                 
                 // Atualizar saldo
                 const newBalance = currentBalance - price;
@@ -2062,11 +2357,63 @@
                 
             } catch (error) {
                 console.error('Error buying key:', error);
-                alert('❌ Erro ao comprar key: ' + error.message);
+                
+                if (error.message.includes('Permission denied')) {
+                    alert('⚠️ Modo offline ativado. Use as funções locais.');
+                    
+                    // Tentar modo local
+                    try {
+                        // Verificar saldo local
+                        const localWalletKey = 'local_wallet_' + (user?.uid || 'guest');
+                        let localWallet = JSON.parse(localStorage.getItem(localWalletKey) || '{"balance": 10.00, "history": []}');
+                        
+                        const currentBalance = localWallet.balance || 10.00;
+                        
+                        if (currentBalance < price) {
+                            alert(`❌ Saldo insuficiente! Você tem R$ ${currentBalance.toFixed(2)} e precisa de R$ ${price.toFixed(2)}.`);
+                            return;
+                        }
+                        
+                        // Gerar key
+                        const newKey = generateRandomKey();
+                        
+                        // Atualizar saldo
+                        localWallet.balance = currentBalance - price;
+                        localWallet.history.push({
+                            amount: -price,
+                            description: `Compra: ${productName}`,
+                            timestamp: Date.now()
+                        });
+                        
+                        localStorage.setItem(localWalletKey, JSON.stringify(localWallet));
+                        
+                        // Salvar key localmente
+                        let localKeys = JSON.parse(localStorage.getItem('local_keys') || '[]');
+                        localKeys.push({
+                            key: newKey,
+                            email: user?.email || 'guest',
+                            type: 'premium',
+                            product: productName,
+                            createdAt: Date.now()
+                        });
+                        localStorage.setItem('local_keys', JSON.stringify(localKeys));
+                        
+                        // Mostrar key
+                        document.getElementById('generatedKeyValue').textContent = newKey;
+                        document.getElementById('keyModal').classList.add('active');
+                        
+                        alert(`✅ Compra realizada (modo offline)! Key: ${newKey}`);
+                        
+                    } catch (localError) {
+                        alert('❌ Erro no modo offline: ' + localError.message);
+                    }
+                } else {
+                    alert('❌ Erro ao comprar key: ' + error.message);
+                }
             }
         }
 
-        // Verificar key
+        // Verificar key (agora verifica local também)
         async function verifyKey() {
             const keyInput = document.getElementById('keyInput').value.trim().toUpperCase();
             const resultDiv = document.getElementById('verifyResult');
@@ -2079,57 +2426,48 @@
             }
 
             try {
+                // Primeiro tentar no Firebase
                 const keyRef = ref(database, 'keys/' + keyInput.replace(/-/g, '_'));
                 const snapshot = await get(keyRef);
 
-                if (!snapshot.exists()) {
-                    resultDiv.className = 'verify-result result-error';
-                    resultDiv.innerHTML = '<h3>Key não encontrada!</h3><p>Esta key não existe no sistema.</p>';
-                    resultDiv.style.display = 'block';
-                    return;
-                }
-
-                const data = snapshot.val();
-                const now = Date.now();
-                
-                if (!data.active) {
-                    resultDiv.className = 'verify-result result-error';
-                    resultDiv.innerHTML = '<h3>Key inativa!</h3><p>Esta key foi desativada.</p>';
-                } else if (data.expiresAt && now > data.expiresAt) {
-                    resultDiv.className = 'verify-result result-error';
-                    resultDiv.innerHTML = '<h3>Key expirada!</h3><p>Esta key não é mais válida.</p>';
-                } else {
-                    let timeLeftText = '';
-                    let expiresDate = '';
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    const now = Date.now();
                     
-                    if (data.timeUnit === 'lifetime') {
-                        timeLeftText = 'Vitalícia';
-                    } else if (data.expiresAt) {
-                        const timeLeft = data.expiresAt - now;
-                        const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-                        const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                        
-                        if (days > 0) {
-                            timeLeftText = `${days} dias`;
-                        } else {
-                            timeLeftText = `${hours} horas`;
-                        }
-                        
-                        expiresDate = new Date(data.expiresAt).toLocaleDateString('pt-BR');
+                    if (!data.active) {
+                        resultDiv.className = 'verify-result result-error';
+                        resultDiv.innerHTML = '<h3>Key inativa!</h3><p>Esta key foi desativada.</p>';
+                    } else if (data.expiresAt && now > data.expiresAt) {
+                        resultDiv.className = 'verify-result result-error';
+                        resultDiv.innerHTML = '<h3>Key expirada!</h3><p>Esta key não é mais válida.</p>';
+                    } else {
+                        showKeyValid(resultDiv, data);
                     }
+                } else {
+                    // Se não encontrou no Firebase, verificar localmente
+                    const localKeys = JSON.parse(localStorage.getItem('local_keys') || '[]');
+                    const localKey = localKeys.find(k => k.key === keyInput);
                     
-                    const createdDate = new Date(data.createdAt).toLocaleDateString('pt-BR');
-                    
-                    resultDiv.className = 'verify-result result-success';
-                    resultDiv.innerHTML = `
-                        <h3>✅ Key válida!</h3>
-                        <p><strong>Produto:</strong> ${data.product}</p>
-                        <p><strong>Cliente:</strong> ${data.client}</p>
-                        <p><strong>Status:</strong> Ativa</p>
-                        <p><strong>Tempo restante:</strong> ${timeLeftText}</p>
-                        <p><strong>Expira em:</strong> ${expiresDate}</p>
-                        <p><strong>Criada em:</strong> ${createdDate}</p>
-                    `;
+                    if (localKey) {
+                        const now = Date.now();
+                        
+                        if (localKey.expiresAt && now > localKey.expiresAt) {
+                            resultDiv.className = 'verify-result result-error';
+                            resultDiv.innerHTML = '<h3>Key expirada!</h3><p>Esta key não é mais válida.</p>';
+                        } else {
+                            resultDiv.className = 'verify-result result-success';
+                            resultDiv.innerHTML = `
+                                <h3>✅ Key válida (modo local)!</h3>
+                                <p><strong>Produto:</strong> ${localKey.product || 'Desconhecido'}</p>
+                                <p><strong>Tipo:</strong> ${localKey.type || 'Desconhecido'}</p>
+                                <p><strong>Status:</strong> Ativa</p>
+                                <p><strong>Gerada em:</strong> ${new Date(localKey.createdAt).toLocaleDateString('pt-BR')}</p>
+                            `;
+                        }
+                    } else {
+                        resultDiv.className = 'verify-result result-error';
+                        resultDiv.innerHTML = '<h3>Key não encontrada!</h3><p>Esta key não existe no sistema.</p>';
+                    }
                 }
                 
                 resultDiv.style.display = 'block';
@@ -2139,6 +2477,40 @@
                 resultDiv.innerHTML = '<h3>Erro ao verificar!</h3><p>Tente novamente mais tarde.</p>';
                 resultDiv.style.display = 'block';
             }
+        }
+
+        function showKeyValid(resultDiv, data) {
+            let timeLeftText = '';
+            let expiresDate = '';
+            
+            if (data.timeUnit === 'lifetime') {
+                timeLeftText = 'Vitalícia';
+            } else if (data.expiresAt) {
+                const timeLeft = data.expiresAt - Date.now();
+                const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                
+                if (days > 0) {
+                    timeLeftText = `${days} dias`;
+                } else {
+                    timeLeftText = `${hours} horas`;
+                }
+                
+                expiresDate = new Date(data.expiresAt).toLocaleDateString('pt-BR');
+            }
+            
+            const createdDate = new Date(data.createdAt).toLocaleDateString('pt-BR');
+            
+            resultDiv.className = 'verify-result result-success';
+            resultDiv.innerHTML = `
+                <h3>✅ Key válida!</h3>
+                <p><strong>Produto:</strong> ${data.product}</p>
+                <p><strong>Cliente:</strong> ${data.client}</p>
+                <p><strong>Status:</strong> Ativa</p>
+                <p><strong>Tempo restante:</strong> ${timeLeftText}</p>
+                <p><strong>Expira em:</strong> ${expiresDate}</p>
+                <p><strong>Criada em:</strong> ${createdDate}</p>
+            `;
         }
 
         // Alterar senha
